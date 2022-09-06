@@ -3,8 +3,7 @@ package dev.arsalaan.footballclubmanagementsystem.dto;
 import lombok.Data;
 
 @Data
-public class TeamDTO {
+public class CupDTO {
     private String name;
-    private String city;
-    private String manager;
+    private Integer numberOfTeams;
 }
