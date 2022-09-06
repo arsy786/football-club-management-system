@@ -26,7 +26,7 @@ public class TeamService {
     // [GET] View All Teams
     public List<TeamDTO> getAllTeams() {
         List<Team> teams = teamRepository.findAll();
-        return teamMapper.toTeamsDTOs(teams);
+        return teamMapper.toTeamDTOs(teams);
     }
 
     // [GET] View a specific Team by its ID

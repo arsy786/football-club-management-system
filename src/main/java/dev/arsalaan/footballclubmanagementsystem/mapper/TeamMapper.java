@@ -12,7 +12,7 @@ public interface TeamMapper {
 
     TeamDTO toTeamDTO (Team team);
 
-    List<TeamDTO> toTeamsDTOs(List<Team> teams);
+    List<TeamDTO> toTeamDTOs(List<Team> teams);
 
     Team toTeam(TeamDTO teamDTO);
 
