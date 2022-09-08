@@ -5,7 +5,7 @@ This class is the Custom exception that is thrown throughout the API.
 E.g: throw new ApiRequestException (instead of standard IllegalStateException)
  */
 
-public class ApiRequestException extends RuntimeException{
+public class ApiRequestException extends RuntimeException {
 
     public ApiRequestException(String message) {
         super(message);

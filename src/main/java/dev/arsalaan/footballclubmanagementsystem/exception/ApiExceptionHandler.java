@@ -28,13 +28,13 @@ public class ApiExceptionHandler {
         // 1. Create payload containing exception details
         ApiException apiException = new ApiException(
                 ex.getMessage(),
-                ex,
+                //ex,
                 HttpStatus.BAD_REQUEST,
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
 
         // 2. Return response entity
-        return new ResponseEntity<>(apiException, apiException.getHttpStatus()) ;
+        return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST) ;
     }
 
     // other exception handlers can be added here
