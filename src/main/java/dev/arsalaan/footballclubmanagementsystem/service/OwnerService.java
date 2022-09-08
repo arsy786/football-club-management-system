@@ -45,17 +45,17 @@ public class OwnerService {
     }
 
     @Transactional
-    public void updateOwnerById(Long ownerId, String name, Integer netWorth) {
+    public void updateOwnerById(Long ownerId, OwnerDTO ownerDTO) {
 
         Owner owner = ownerRepository.findById(ownerId).orElseThrow(
                 () -> new ApiRequestException("owner with id " + ownerId + " does not exist"));
 
-        if (name != null && name.length() > 0 && !Objects.equals(owner.getName(), name)) {
-            owner.setName(name);
+        if (ownerDTO.getName() != null && ownerDTO.getName().length() > 0 && !Objects.equals(owner.getName(), ownerDTO.getName())) {
+            owner.setName(ownerDTO.getName());
         }
 
-        if (netWorth != null && netWorth > 0 && !Objects.equals(owner.getNetWorth(), netWorth)) {
-            owner.setNetWorth(netWorth);
+        if (ownerDTO.getNetWorth() != null && ownerDTO.getNetWorth() > 0 && !Objects.equals(owner.getNetWorth(), ownerDTO.getNetWorth())) {
+            owner.setNetWorth(ownerDTO.getNetWorth());
         }
 
     }

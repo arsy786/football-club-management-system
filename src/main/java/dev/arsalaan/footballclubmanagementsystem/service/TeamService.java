@@ -59,23 +59,23 @@ public class TeamService {
 
     // [PUT] Update a specific Team by its ID
     @Transactional
-    public void updateTeamById(Long teamId, String name, String city, String manager) {
+    public void updateTeamById(Long teamId, TeamDTO teamDTO) {
 
         // retrieve team entity by id
         Team team = teamRepository.findById(teamId).orElseThrow(
                 () -> new ApiRequestException("team with id " + teamId + " does not exist"));
 
         // checks
-        if (name != null && name.length() > 0 && !Objects.equals(team.getName(), name)) {
-            team.setName(name);
+        if (teamDTO.getName() != null && teamDTO.getName().length() > 0 && !Objects.equals(team.getName(), teamDTO.getName())) {
+            team.setName(teamDTO.getName());
         }
 
-        if (city != null && city.length() > 0 && !Objects.equals(team.getCity(), city)) {
-            team.setCity(city);
+        if (teamDTO.getCity() != null && teamDTO.getCity().length() > 0 && !Objects.equals(team.getCity(), teamDTO.getCity())) {
+            team.setCity(teamDTO.getCity());
         }
 
-        if (manager != null && manager.length() > 0 && !Objects.equals(team.getManager(), manager)) {
-            team.setManager(manager);
+        if (teamDTO.getManager() != null && teamDTO.getManager().length() > 0 && !Objects.equals(team.getManager(), teamDTO.getManager())) {
+            team.setManager(teamDTO.getManager());
         }
 
         // Team updatedTeam = teamRepository.save(team); - would need this if @Transactional not used

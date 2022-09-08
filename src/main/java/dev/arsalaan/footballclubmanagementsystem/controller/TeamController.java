@@ -54,9 +54,10 @@ public class TeamController {
     // [PUT] Update a specific Team by its ID
     @PutMapping("/{teamId}")
     public ResponseEntity updateTeamById(@PathVariable("teamId") Long teamId, @RequestBody TeamDTO teamDTO) {
-        teamService.updateTeamById(teamId, teamDTO.getName(), teamDTO.getCity(), teamDTO.getManager());
+        teamService.updateTeamById(teamId, teamDTO);
         return ResponseEntity.ok().build();
     }
+
 
     // [DELETE] Remove a specific Team by its ID
     @DeleteMapping("/{teamId}")

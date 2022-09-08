@@ -45,25 +45,25 @@ public class PlayerService {
     }
 
     @Transactional
-    public void updatePlayerById(Long playerId, String name, String position, String nationality, Integer age) {
+    public void updatePlayerById(Long playerId, PlayerDTO playerDTO) {
 
         Player player = playerRepository.findById(playerId).orElseThrow(
                 () -> new ApiRequestException("player with id " + playerId + " does not exist"));
 
-        if (name != null && name.length() > 0 && !Objects.equals(player.getName(), name)) {
-            player.setName(name);
+        if (playerDTO.getName() != null && playerDTO.getName().length() > 0 && !Objects.equals(player.getName(), playerDTO.getName())) {
+            player.setName(playerDTO.getName());
         }
 
-        if (position != null && position.length() > 0 && !Objects.equals(player.getPosition(), position)) {
-            player.setPosition(position);
+        if (playerDTO.getPosition() != null && playerDTO.getPosition().length() > 0 && !Objects.equals(player.getPosition(), playerDTO.getPosition())) {
+            player.setPosition(playerDTO.getPosition());
         }
 
-        if (nationality != null && nationality.length() > 0 && !Objects.equals(player.getNationality(), nationality)) {
-            player.setNationality(nationality);
+        if (playerDTO.getNationality() != null && playerDTO.getNationality().length() > 0 && !Objects.equals(player.getNationality(), playerDTO.getNationality())) {
+            player.setNationality(playerDTO.getNationality());
         }
 
-        if (age != null && age > 15 && !Objects.equals(player.getAge(), age)) {
-            player.setAge(age);
+        if (playerDTO.getAge() != null && playerDTO.getAge() > 15 && !Objects.equals(player.getAge(), playerDTO.getAge())) {
+            player.setAge(playerDTO.getAge());
         }
 
     }

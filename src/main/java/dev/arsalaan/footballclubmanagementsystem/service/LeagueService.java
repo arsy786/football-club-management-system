@@ -51,22 +51,22 @@ public class LeagueService {
     }
 
     @Transactional
-    public void updateLeagueById(Long leagueId, String name, String country, Integer numberOfTeams) {
+    public void updateLeagueById(Long leagueId, LeagueDTO leagueDTO) {
 
         League league = leagueRepository.findById(leagueId).orElseThrow(
                 () -> new ApiRequestException("league with id " + leagueId + " does not exist"));
 
-        if (name != null && name.length() > 0 && !Objects.equals(league.getName(), name)) {
-            league.setName(name);
+        if (leagueDTO.getName() != null && leagueDTO.getName().length() > 0 && !Objects.equals(league.getName(), leagueDTO.getName())) {
+            league.setName(leagueDTO.getName());
         }
 
-        if (country != null && country.length() > 0 && !Objects.equals(league.getCountry(), country)) {
-            league.setCountry(country);
+        if (leagueDTO.getCountry() != null && leagueDTO.getCountry().length() > 0 && !Objects.equals(league.getCountry(), leagueDTO.getCountry())) {
+            league.setCountry(leagueDTO.getCountry());
         }
 
 
-        if (numberOfTeams != null && numberOfTeams > 0 && !Objects.equals(league.getNumberOfTeams(), numberOfTeams)) {
-            league.setNumberOfTeams(numberOfTeams);
+        if (leagueDTO.getNumberOfTeams() != null && leagueDTO.getNumberOfTeams() > 0 && !Objects.equals(league.getNumberOfTeams(), leagueDTO.getNumberOfTeams())) {
+            league.setNumberOfTeams(leagueDTO.getNumberOfTeams());
         }
 
     }

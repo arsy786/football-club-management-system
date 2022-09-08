@@ -51,17 +51,17 @@ public class StadiumService {
     }
 
     @Transactional
-    public void updateStadiumById(Long stadiumId, String name, Integer capacity) {
+    public void updateStadiumById(Long stadiumId, StadiumDTO stadiumDTO) {
 
         Stadium stadium = stadiumRepository.findById(stadiumId).orElseThrow(
                 () -> new ApiRequestException("stadium with id " + stadiumId + " does not exist"));
 
-        if (name != null && name.length() > 0 && !Objects.equals(stadium.getName(), name)) {
-            stadium.setName(name);
+        if (stadiumDTO.getName() != null && stadiumDTO.getName().length() > 0 && !Objects.equals(stadium.getName(), stadiumDTO.getName())) {
+            stadium.setName(stadiumDTO.getName());
         }
 
-        if (capacity != null && capacity > 0 && !Objects.equals(stadium.getCapacity(), capacity)) {
-            stadium.setCapacity(capacity);
+        if (stadiumDTO.getCapacity() != null && stadiumDTO.getCapacity() > 0 && !Objects.equals(stadium.getCapacity(), stadiumDTO.getCapacity())) {
+            stadium.setCapacity(stadiumDTO.getCapacity());
         }
 
     }
