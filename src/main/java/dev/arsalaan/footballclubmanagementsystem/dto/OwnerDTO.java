@@ -6,5 +6,5 @@ import lombok.Data;
 public class OwnerDTO {
     private Long ownerId;
     private String name;
-    private Integer netWorth;
+    private String netWorth;
 }

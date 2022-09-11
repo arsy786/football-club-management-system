@@ -61,7 +61,7 @@ public class TeamController {
     // [POST] Create a Team
     @Operation(summary = "This is to create a Team")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Created the Team and added to Db", content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "201", description = "Created the Team and added to Db", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", description = "Team with the same name already exists", content = {@Content(mediaType = "application/json")})
     })
     @PostMapping("/")
@@ -94,6 +94,49 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    // [GET] View All Teams by League ID
+    @Operation(summary = "This is to view All Teams by League ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Fetched the Teams from League with ID from Db", content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", description = "No Teams from League with ID from Db", content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "League with ID does not exist", content = {@Content(mediaType = "application/json")})
+    })
+    @GetMapping("/league/{leagueId}")
+    public ResponseEntity<List<TeamDTO>> viewAllTeamsByLeagueId(@PathVariable("leagueId") Long leagueId) {
 
+        List<TeamDTO> teamsDTO = teamService.viewAllTeamsByLeagueId(leagueId);
+
+        if (teamsDTO == null || teamsDTO.isEmpty()) {
+            return new ResponseEntity<>(teamsDTO, HttpStatus.NO_CONTENT);
+        }
+
+        return ResponseEntity.ok(teamsDTO);
+    }
+
+    // [POST] Add a Course to a specific Lecturer
+    @Operation(summary = "This is to add a Team to a League by their ID's")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Added the Team to League with ID from Db", content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "Team/League with ID does not exist", content = {@Content(mediaType = "application/json")})
+    })
+    @PostMapping("/{teamId}/league/{leagueId}")
+    public ResponseEntity addTeamToLeague(@PathVariable("leagueId") Long leagueId,
+                                          @PathVariable("teamId") Long teamId) {
+        teamService.addTeamToLeague(leagueId, teamId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // [DELETE] Remove a specific Team from a League
+    @Operation(summary = "This is to remove a Team from a Leagueby its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Deleted the Team from Db", content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "Error", content = {@Content(mediaType = "application/json")})
+    })
+    @DeleteMapping("/{teamId}/league/{leagueId}")
+    public ResponseEntity removeTeamFromLeague(@PathVariable("leagueId") Long leagueId,
+                                                   @PathVariable("teamId") Long teamId) {
+        teamService.removeTeamFromLeague(leagueId, teamId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
 }

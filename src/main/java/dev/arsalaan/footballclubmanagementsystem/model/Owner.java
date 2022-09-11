@@ -18,7 +18,7 @@ public class Owner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ownerId;
     private String name;
-    private Integer netWorth;
+    private String netWorth;
 
     @OneToOne
     @JoinColumn(name = "team_id", referencedColumnName = "teamId") //fk

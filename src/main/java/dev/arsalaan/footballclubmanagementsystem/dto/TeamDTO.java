@@ -2,10 +2,8 @@ package dev.arsalaan.footballclubmanagementsystem.dto;
 
 import lombok.Data;
 
-import java.io.Serializable;
-
 @Data
-public class TeamDTO implements Serializable {
+public class TeamDTO {
     private Long teamId;
     private String name;
     private String city;

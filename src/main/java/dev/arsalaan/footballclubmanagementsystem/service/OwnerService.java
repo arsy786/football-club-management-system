@@ -54,7 +54,7 @@ public class OwnerService {
             owner.setName(ownerDTO.getName());
         }
 
-        if (ownerDTO.getNetWorth() != null && ownerDTO.getNetWorth() > 0 && !Objects.equals(owner.getNetWorth(), ownerDTO.getNetWorth())) {
+        if (ownerDTO.getNetWorth() != null && ownerDTO.getNetWorth().length() > 0 && !Objects.equals(owner.getNetWorth(), ownerDTO.getNetWorth())) {
             owner.setNetWorth(ownerDTO.getNetWorth());
         }
 
