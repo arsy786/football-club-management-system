@@ -16,7 +16,7 @@ public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long player_id;
+    private Long playerId;
     private String name;
     private String position;
     private String nationality;
