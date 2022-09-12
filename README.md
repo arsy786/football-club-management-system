@@ -20,7 +20,7 @@ I will be using this README.md file to add any notes, features, plans and detail
 
 I wanted to design the ERD so that I could make good practice of all JPA relationships available.
 
-| Description | Relationship|
+| Entity Relationship Description | JPA Annotation|
 | ----------- | ----------- |
 | A Team has Many Players | @OneToMany |
 | A Team has 1 Owner | @OneToOne |
