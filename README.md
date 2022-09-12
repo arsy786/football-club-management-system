@@ -4,7 +4,7 @@ FCMS is a Spring Boot REST API for dealing with the management of Football Clubs
 ## Table of Contents  
 [Motivation](#motivation)
 
-[Entity Relationship Diagram](#entity-relationship-diagram-(erd))
+[Entity Relationship Diagram](#entity-relationship-diagram)
 
 [Spring Boot Rest API](#spring-boot-rest-api) 
 
@@ -22,11 +22,11 @@ Bored with the standard student-course REST APIs that lacked any detail or clear
 
 I will be using this README.md file to add any notes, features, plans and details regarding the management of the entire project! This will essentially serve as a blueprint for any future Spring Boot REST APIs I plan to build! :)
 
-## Entity Relationship Diagram (ERD)
+## ERD
 
 ![FCSM ERD](FCMS-ERD.png)
 
-I wanted to design the ERD so that I could make good practice of all JPA relationships available.
+I wanted to design the Entity Relationship Diagram (ERD) so that I could make good practice of all JPA relationships available.
 
 | Description | Relationship|
 | ----------- | ----------- |
