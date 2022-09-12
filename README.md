@@ -1,6 +1,14 @@
 # Football-Club-Management-System
 FCMS is a Spring Boot REST API for dealing with the management of Football Clubs.
 
+## Table of Contents  
+[Motivation](#motivation)
+
+[Entity Relationship Diagram](#entity-relationship-diagram-(erd))
+
+[Spring Boot Rest API](#spring-boot-rest-api) 
+
+
 ## Motivation
 The purpose of this project is to grow my knowledge of Spring Boot starting from a foundation level to an advanced level. I plan to gradually implement new features to steadily grow my understanding of the framework, as well as concepts surrounding REST API development.
 
@@ -20,7 +28,7 @@ I will be using this README.md file to add any notes, features, plans and detail
 
 I wanted to design the ERD so that I could make good practice of all JPA relationships available.
 
-| Entity Relationship Description | JPA Annotation|
+| Description | Relationship|
 | ----------- | ----------- |
 | A Team has Many Players | @OneToMany |
 | A Team has 1 Owner | @OneToOne |
