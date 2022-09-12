@@ -66,8 +66,8 @@ A) If data in one table is related to, BUT does NOT 'belong' to the entity descr
 
 ### Connect Spring Boot to Database
 
-- Connect easily via Spring Data JPA
-- Add information to applications.properties file to setup DB connections (and other features i.e. port)
+- Connect easily via Spring Data JPA.
+- Add information to applications.properties file to setup DB connections (and other features i.e. port).
 - Example of H2 database connection setup with console enabled and data pre-loaded: 
 ```properties
 server.port=8080
@@ -92,21 +92,30 @@ spring.sql.init.mode=always
 spring.sql.init.data-locations=classpath:file-name.sql
 ```
 
+- file-name.sql will contain SQL statements to populate the entities created by JPA/Hibernate during Spring Boot start-up:
+```sql
+INSERT INTO team (name, city, manager)
+VALUES ('Manchester United F.C.', 'Manchester', 'Erik ten Hag');
+
+INSERT INTO team (name, city, manager)
+VALUES ('Manchester City F.C.', 'Manchester', 'Pep Guardiola');
+```
+
 ### Model/Entity Layer
 
-- Create a POJO for your Models/Entities
-- This class (entity) will be registered with Hibernate with the correct JPA Annotations
-- Can use Lombok annotations (@Data) to reduce boiler plate code
+- Create a POJO for your Models/Entities.
+- This class (entity) will be registered with Hibernate with the correct JPA Annotations.
+- Can use Lombok annotations (@Data) to reduce boiler plate code.
 - [Link to understanding JPA Entities and Annotations](https://www.baeldung.com/jpa-entities)
 
 ### Repository Layer
 
-- To program CRUD (and JPA) operations on Student entities, need to have a StudentRepository interface
+- To program CRUD (and JPA) operations on Student entities, need to have a StudentRepository interface.
 - Spring Data provides a layer on top of JPA that offers convenient ways to reduce boiler plate code.
-- CrudRepository interface extends Repository to provide CRUD functionality
-- JpaRepository interface extends CrudRepository to give us the JPA specific features
-- For functions that are not already present in JpaRepo, add new methods/queries in the StudentRepository interface
-- No method body is required as Spring will provide the boilerplate code
+- CrudRepository interface extends Repository to provide CRUD functionality.
+- JpaRepository interface extends CrudRepository to give us the JPA specific features.
+- For functions that are not already present in JpaRepo, add new methods/queries in the StudentRepository interface.
+- No method body is required, only the method signature, as Spring will provide the boilerplate code.
 - For simple queries, Spring can easily derive what the query should be from just the method name.
 - Example of simple query: 
 ```java
@@ -114,10 +123,13 @@ List<Book> findByName(String name);
 ```
 
 - For more complex queries, can annotate a repository method with the @Query annotation where the 	value contains the JPQL or SQL to execute.
-- Example of complex query:
+- Example of complex queries:
 ```java
 @Query("select b from Book b where upper(b.title) like concat('%',upper(:title), '%')")
 List<Book> findByTitle(@Param("title") String title);
+
+@Query("SELECT s FROM Student s WHERE s.email = ?1")
+Optional<Student> findStudentByEmail(String email);
 ```
 
 ### DTO
@@ -128,23 +140,64 @@ List<Book> findByTitle(@Param("title") String title);
 
 ### Service Layer
 
+- The Service is where all of the implementation is done and interacts with the the repository (DB). 
+- The Service exposes methods that will be called from the controller.
+- Here is where all the business logic code is implemented.
+- These are basic CRUD methods.
+- DTO's are injected in this layer, as any response being passed to the Controller must be in the form of a DTO
+
 ### Controller Layer
+
+- Now we can implement a controller class to define our API URLs and use the service class to manage data.
+- Different methods are defined in the controller, these methods will be called by different endpoints.
+- The endpoint methods in the Controller typically match those in its corresponding Service Layer.
+- Controller consumes (via endpoint) and responds (via service) with DTO's only.
+- Handles HTTP requests
+
+- The Basic/Standard HTTP REST API calls:
+
+(GET) getAllEntities
+(GET) getEntityById
+(POST) createEntity
+(PUT) updateEntityById
+(DELETE) deleteEntityById
 
 ### Extra CRUD Methods/Endpoints
 
+- Once the basic CRUD methods are added to the Service/Controller layers, if the entity has relationships with other entities... Extra CRUD methods need to be implemented.
+- ManyToOne: logic in Child Service layer
+- OneToOne: Logic is either not required OR in the dependent entity Service layer (e.g. Student ID exists if Student does)
+- ManyToMany: logic in either side
+
+- The Extra HTTP REST API calls for entity rships:
+
+(GET) viewAllChildsByParentId
+(POST) addChildToParent
+(DELETE) removeChildFromParent
 
 ## Extra Features to Consider
 
 ### Documentation
 
+- Swagger/OpenAPI
+- Add annotations in Controller layer
+
 ### Logging
+
+- Slf4j in Exception Handler and Controller layer
 
 ### Testing
 
+- Unit Test: Controller(s) & Service(s) via JUnit & Mockito
+- Integration Testing: Endpoints (Controller) via Cucumber/Gherkin or MockMvc/RestTemplate/TestRestTemplate
+
 ### Security
+
+- JWT
 
 ### Validation
 
-
+- JPA Validation Annotations (@Valid, @NonBlank, @Email etc.)
+- In DTO
 
 
