@@ -21,8 +21,13 @@ I wanted to design the ERD so that I could make good practice of all relationshi
 
 | Description | Relationship|
 | ----------- | ----------- |
-| Header      | Title       |
-| Paragraph   | Text        |
+| A Team has Many Players | @OneToMany |
+| A Team has 1 Owner | @OneToOne |
+| Many Teams play in 1 League| @ManyToOne |
+| A Team has 1 Stadium | @OneToOne |
+| A Team can play in Many Cups (and Many Teams can play in the same Cup) | @ManyToMany |
+
+
 
 - A Team has Many Players
 - A Team has 1 Owner
