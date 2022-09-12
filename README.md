@@ -4,7 +4,7 @@ FCMS is a Spring Boot REST API for dealing with the management of Football Clubs
 ## Table of Contents  
 [Motivation](#motivation)
 
-[Entity Relationship Diagram](#entity-relationship-diagram)
+[ERD](#erd)
 
 [Spring Boot Rest API](#spring-boot-rest-api) 
 
