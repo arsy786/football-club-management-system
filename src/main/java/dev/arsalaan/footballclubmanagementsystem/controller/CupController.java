@@ -65,4 +65,34 @@ public class CupController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    // [GET] View All Cups for Team ID
+    @GetMapping("/team/{teamId}")
+    public ResponseEntity<List<CupDTO>> viewAllCupsForTeam(@PathVariable("teamId") Long teamId) {
+
+        List<CupDTO> cupsDTO = cupService.viewAllCupsForTeam(teamId);
+
+        if (cupsDTO == null || cupsDTO.isEmpty()) {
+            return new ResponseEntity<>(cupsDTO, HttpStatus.NO_CONTENT);
+        }
+
+        return ResponseEntity.ok(cupsDTO);
+    }
+
+    // [POST] Add a Cup to a specific Team
+    @PostMapping("/{cupId}/team/{teamId}")
+    public ResponseEntity addCupToTeam(@PathVariable("teamId") Long teamId,
+                                          @PathVariable("cupId") Long cupId) {
+        cupService.addCupToTeam(teamId, cupId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // [DELETE] Remove a specific Cup from a Team
+    @DeleteMapping("/{cupId}/team/{teamId}")
+    public ResponseEntity removeCupFromTeam(@PathVariable("teamId") Long teamId,
+                                               @PathVariable("cupId") Long cupId) {
+        cupService.removeCupFromTeam(teamId, cupId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
 }

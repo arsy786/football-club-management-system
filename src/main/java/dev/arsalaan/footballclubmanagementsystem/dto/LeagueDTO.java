@@ -10,5 +10,6 @@ public class LeagueDTO {
     private String name;
     private String country;
     private Integer numberOfTeams;
-    //private List<TeamDTO> teamsDTO;
+
+    private List<TeamDTO> teams;
 }

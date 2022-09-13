@@ -65,4 +65,33 @@ public class StadiumController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    // [GET] View Stadium for Team ID
+    @GetMapping("/team/{teamId}")
+    public ResponseEntity<StadiumDTO> viewStadiumForTeam(@PathVariable("teamId") Long teamId) {
+
+        StadiumDTO stadiumDTO = stadiumService.viewStadiumForTeam(teamId);
+
+        if (stadiumDTO == null) {
+            return new ResponseEntity("Team with id " + teamId + " does not have a Stadium", HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(stadiumDTO);
+    }
+
+    // [POST] Add a Stadium to a specific Team
+    @PostMapping("/{stadiumId}/team/{teamId}")
+    public ResponseEntity addStadiumToTeam(@PathVariable("teamId") Long teamId,
+                                          @PathVariable("stadiumId") Long stadiumId) {
+        stadiumService.addStadiumToTeam(teamId, stadiumId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // [DELETE] Remove a specific Stadium from a Team
+    @DeleteMapping("/{stadiumId}/team/{teamId}")
+    public ResponseEntity removeStadiumFromTeam(@PathVariable("teamId") Long teamId,
+                                               @PathVariable("stadiumId") Long stadiumId) {
+        stadiumService.removeStadiumFromTeam(teamId, stadiumId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }

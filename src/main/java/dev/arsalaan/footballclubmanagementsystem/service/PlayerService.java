@@ -3,8 +3,10 @@ package dev.arsalaan.footballclubmanagementsystem.service;
 import dev.arsalaan.footballclubmanagementsystem.dto.PlayerDTO;
 import dev.arsalaan.footballclubmanagementsystem.exception.ApiRequestException;
 import dev.arsalaan.footballclubmanagementsystem.mapper.PlayerMapper;
+import dev.arsalaan.footballclubmanagementsystem.model.Team;
 import dev.arsalaan.footballclubmanagementsystem.model.Player;
 import dev.arsalaan.footballclubmanagementsystem.repository.PlayerRepository;
+import dev.arsalaan.footballclubmanagementsystem.repository.TeamRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,10 +17,12 @@ import java.util.Objects;
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
+    private final TeamRepository teamRepository;
     private final PlayerMapper playerMapper;
 
-    public PlayerService(PlayerRepository playerRepository, PlayerMapper playerMapper) {
+    public PlayerService(PlayerRepository playerRepository, TeamRepository teamRepository, PlayerMapper playerMapper) {
         this.playerRepository = playerRepository;
+        this.teamRepository = teamRepository;
         this.playerMapper = playerMapper;
     }
 
@@ -77,6 +81,48 @@ public class PlayerService {
         }
 
         playerRepository.deleteById(playerId);
+    }
+
+    public List<PlayerDTO> viewAllPlayersForTeam(Long teamId) {
+
+        Team team = teamRepository.findById(teamId).orElseThrow(
+                () -> new ApiRequestException("Team with id " + teamId + " does not exist"));
+
+        return playerMapper.toPlayerDTOs(team.getPlayers());
+    }
+
+    @Transactional
+    public void addPlayerToTeam(Long teamId, Long playerId) {
+
+        Team team = teamRepository.findById(teamId).orElseThrow(
+                () -> new ApiRequestException("Team with id " + teamId + " does not exist"));
+        Player player = playerRepository.findById(playerId).orElseThrow(
+                () -> new ApiRequestException("Player with id " + playerId + " does not exist"));
+
+        if (Objects.nonNull(player.getTeam())) {
+            throw new ApiRequestException("Player with id " + playerId + " already assigned to Team with id " + player.getTeam().getTeamId());
+        }
+
+        player.setTeam(team);
+    }
+
+    @Transactional
+    public void removePlayerFromTeam(Long teamId, Long playerId) {
+
+        Team team = teamRepository.findById(teamId).orElseThrow(
+                () -> new ApiRequestException("Team with id " + teamId + " not found"));
+        Player player = playerRepository.findById(playerId).orElseThrow(
+                () -> new ApiRequestException("Player with id " + playerId + " does not exist"));
+
+        if(!player.getTeam().getTeamId().equals(team.getTeamId())) {
+            throw new ApiRequestException("Player with id " + playerId + " is not assigned to Team with id " + teamId);
+        }
+
+        if (Objects.isNull(player.getTeam())) {
+            throw new ApiRequestException("Player with id " + playerId + " is not assigned to any Team");
+        }
+
+        player.setTeam(null); // sets team field in player to null instead of removing the parents AND deleting child
     }
     
 }

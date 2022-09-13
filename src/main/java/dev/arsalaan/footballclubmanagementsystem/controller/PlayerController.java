@@ -65,4 +65,33 @@ public class PlayerController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    // [GET] View All Players for Team ID
+    @GetMapping("/team/{teamId}")
+    public ResponseEntity<List<PlayerDTO>> viewAllPlayersForTeam(@PathVariable("teamId") Long teamId) {
+
+        List<PlayerDTO> playersDTO = playerService.viewAllPlayersForTeam(teamId);
+
+        if (playersDTO == null || playersDTO.isEmpty()) {
+            return new ResponseEntity<>(playersDTO, HttpStatus.NO_CONTENT);
+        }
+
+        return ResponseEntity.ok(playersDTO);
+    }
+
+    // [POST] Add a Player to a specific Team
+    @PostMapping("/{playerId}/team/{teamId}")
+    public ResponseEntity addPlayerToTeam(@PathVariable("teamId") Long teamId,
+                                          @PathVariable("playerId") Long playerId) {
+        playerService.addPlayerToTeam(teamId, playerId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // [DELETE] Remove a specific Player from a Team
+    @DeleteMapping("/{playerId}/team/{teamId}")
+    public ResponseEntity removePlayerFromTeam(@PathVariable("teamId") Long teamId,
+                                               @PathVariable("playerId") Long playerId) {
+        playerService.removePlayerFromTeam(teamId, playerId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }

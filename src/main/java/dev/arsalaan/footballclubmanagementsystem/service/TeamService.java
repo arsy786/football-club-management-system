@@ -100,8 +100,8 @@ public class TeamService {
         teamRepository.deleteById(teamId);
     }
 
-    // [GET] View All Teams by League ID
-    public List<TeamDTO> viewAllTeamsByLeagueId(Long leagueId) {
+    // [GET] View All Teams for League ID
+    public List<TeamDTO> viewAllTeamsForLeague(Long leagueId) {
 
         League league = leagueRepository.findById(leagueId).orElseThrow(
                 () -> new ApiRequestException("League with id " + leagueId + " does not exist"));

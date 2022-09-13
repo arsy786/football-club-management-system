@@ -4,7 +4,9 @@ import dev.arsalaan.footballclubmanagementsystem.dto.StadiumDTO;
 import dev.arsalaan.footballclubmanagementsystem.exception.ApiRequestException;
 import dev.arsalaan.footballclubmanagementsystem.mapper.StadiumMapper;
 import dev.arsalaan.footballclubmanagementsystem.model.Stadium;
+import dev.arsalaan.footballclubmanagementsystem.model.Team;
 import dev.arsalaan.footballclubmanagementsystem.repository.StadiumRepository;
+import dev.arsalaan.footballclubmanagementsystem.repository.TeamRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,10 +18,12 @@ import java.util.Optional;
 public class StadiumService {
 
     private final StadiumRepository stadiumRepository;
+    private final TeamRepository teamRepository;
     private final StadiumMapper stadiumMapper;
 
-    public StadiumService(StadiumRepository stadiumRepository, StadiumMapper stadiumMapper) {
+    public StadiumService(StadiumRepository stadiumRepository, TeamRepository teamRepository, StadiumMapper stadiumMapper) {
         this.stadiumRepository = stadiumRepository;
+        this.teamRepository = teamRepository;
         this.stadiumMapper = stadiumMapper;
     }
 
@@ -77,4 +81,47 @@ public class StadiumService {
         stadiumRepository.deleteById(stadiumId);
     }
 
+    public StadiumDTO viewStadiumForTeam(Long teamId) {
+
+        Team team = teamRepository.findById(teamId).orElseThrow(
+                () -> new ApiRequestException("Team with id " + teamId + " does not exist"));
+
+        return stadiumMapper.toStadiumDTO(team.getStadium());
+    }
+
+    @Transactional
+    public void addStadiumToTeam(Long teamId, Long stadiumId) {
+
+        Team team = teamRepository.findById(teamId).orElseThrow(
+                () -> new ApiRequestException("Team with id " + teamId + " does not exist"));
+        Stadium stadium = stadiumRepository.findById(stadiumId).orElseThrow(
+                () -> new ApiRequestException("Stadium with id " + stadiumId + " does not exist"));
+
+        if (Objects.nonNull(stadium.getTeam())) {
+            throw new ApiRequestException("Stadium with id " + stadiumId + " already assigned to Team with id " + stadium.getTeam().getTeamId());
+        }
+
+        stadium.setTeam(team);
+    }
+
+    @Transactional
+    public void removeStadiumFromTeam(Long teamId, Long stadiumId) {
+
+        Team team = teamRepository.findById(teamId).orElseThrow(
+                () -> new ApiRequestException("Team with id " + teamId + " not found"));
+        Stadium stadium = stadiumRepository.findById(stadiumId).orElseThrow(
+                () -> new ApiRequestException("Stadium with id " + stadiumId + " does not exist"));
+
+        if(!stadium.getTeam().getTeamId().equals(team.getTeamId())) {
+            throw new ApiRequestException("Stadium with id " + stadiumId + " is not assigned to Team with id " + teamId);
+        }
+
+        if (Objects.isNull(stadium.getTeam())) {
+            throw new ApiRequestException("Stadium with id " + stadiumId + " is not assigned to any Team");
+        }
+
+        stadium.setTeam(null); // sets team field in stadium to null instead of removing the parents AND deleting child
+    }
+    
+    
 }

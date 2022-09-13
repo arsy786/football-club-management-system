@@ -94,17 +94,17 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    // [GET] View All Teams by League ID
-    @Operation(summary = "This is to view All Teams by League ID")
+    // [GET] View All Teams for League ID
+    @Operation(summary = "This is to view All Teams for League ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Fetched the Teams from League with ID from Db", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "204", description = "No Teams from League with ID from Db", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", description = "League with ID does not exist", content = {@Content(mediaType = "application/json")})
     })
     @GetMapping("/league/{leagueId}")
-    public ResponseEntity<List<TeamDTO>> viewAllTeamsByLeagueId(@PathVariable("leagueId") Long leagueId) {
+    public ResponseEntity<List<TeamDTO>> viewAllTeamsForLeague(@PathVariable("leagueId") Long leagueId) {
 
-        List<TeamDTO> teamsDTO = teamService.viewAllTeamsByLeagueId(leagueId);
+        List<TeamDTO> teamsDTO = teamService.viewAllTeamsForLeague(leagueId);
 
         if (teamsDTO == null || teamsDTO.isEmpty()) {
             return new ResponseEntity<>(teamsDTO, HttpStatus.NO_CONTENT);
@@ -113,7 +113,7 @@ public class TeamController {
         return ResponseEntity.ok(teamsDTO);
     }
 
-    // [POST] Add a Course to a specific Lecturer
+    // [POST] Add a Team to a specific League
     @Operation(summary = "This is to add a Team to a League by their ID's")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Added the Team to League with ID from Db", content = {@Content(mediaType = "application/json")}),
