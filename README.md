@@ -225,6 +225,8 @@ Optional<Student> findStudentByEmail(String email);
 - Can use Java Validation annotations on fields (@NonBlank, @Emai, etc.)
 
 NOTE: [Can use JPA Buddy to generate DTOs](https://www.youtube.com/watch?v=_u-qn-R4DoA)
+<br>
+NOTE: DTOs solve Jackson JSON infinite recursion problem for bidirectional relationships.
 
 e.g. User Model vs. User DTO
 
@@ -309,9 +311,9 @@ The Extra HTTP REST API calls for entity rships:
 
 | Entity Relationship | Extra CRUD Methods/Endpoints|
 | ----------- | ----------- |
-| @ManyToOne |  (GET) viewAllChildrenForParent (POST) addChildToParent (DELETE) removeChildFromParent |
-| @OneToOne | (GET) viewDependentForIndependent (POST) addDependentToIndependent (DELETE) removeDependentFromIndependent |
-| @ManyToMany |  (GET) viewAllDependentsForIndependent (POST) addDependentToIndependent (DELETE) removeDependentFromIndependent |
+| @ManyToOne |  (GET) viewAllChildrenForParent <br> (POST) addChildToParent <br> (DELETE) removeChildFromParent |
+| @OneToOne | (GET) viewDependentForIndependent <br> (POST) addDependentToIndependent <br> (DELETE) removeDependentFromIndependent |
+| @ManyToMany |  (GET) viewAllDependentsForIndependent <br> (POST) addDependentToIndependent <br> (DELETE) removeDependentFromIndependent |
 
 Note: Servic Layer logic differs between @ManyToMany and @ManyToOne relationships
 
