@@ -31,11 +31,9 @@ public class Team {
     private League league;
 
     @OneToMany(mappedBy = "team")
-    @ToString.Exclude
     private List<Player> players;
 
     @ManyToMany(mappedBy = "teams")
-    @ToString.Exclude
     private List<Cup> cups;
 
     @OneToOne(mappedBy = "team")
