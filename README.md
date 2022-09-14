@@ -176,6 +176,10 @@ A) If data in one table is related to, BUT does NOT 'belong' to the entity descr
 
 ## 3. Spring Boot REST API
 
+*DISCLAIMER: All features (Entity, DTO, Controller, etc.) associated with 'Team' will aim to maintain the highest coding standards; implement the most concepts; and contain the most detail in regard to complying with REST API development standards.*
+
+*Features associated with other Models (Player, Owner, etc.) will only contain what is necessary and convenient for a project of this scale e.g. other Controllers will not contain OpenAPI documentation simply for convenience, code readability and reusability.*
+
 ### 3.1 Project Setup
 
 ### 3.1.1 Initialise Spring Boot Project
@@ -240,7 +244,7 @@ JPA Annotations with Lombok Example:
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "team")
+@Table(name = "user")
 public class User {
 
     @Id
