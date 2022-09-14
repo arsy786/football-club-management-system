@@ -1,25 +1,29 @@
 package dev.arsalaan.footballclubmanagementsystem.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Builder
-@Data
-@Entity
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "team")
 public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
+
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
+
+    @Column(name = "city", nullable = false)
     private String city;
+
+    @Column(name = "manager")
     private String manager;
 
     @ManyToOne
@@ -27,9 +31,11 @@ public class Team {
     private League league;
 
     @OneToMany(mappedBy = "team")
+    @ToString.Exclude
     private List<Player> players;
 
     @ManyToMany(mappedBy = "teams")
+    @ToString.Exclude
     private List<Cup> cups;
 
     @OneToOne(mappedBy = "team")

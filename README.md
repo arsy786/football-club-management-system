@@ -29,7 +29,7 @@ I will be using this README.md file to add any notes, features, plans and detail
 
 I wanted to design the Entity Relationship Diagram (ERD) so that I could make use of all JPA relationships available.
 
-| Description | Relationship|
+| Description | JPA Relationship|
 | ----------- | ----------- |
 | A Team has Many Players | @OneToMany |
 | Many Teams play in 1 League| @ManyToOne |
@@ -38,11 +38,11 @@ I wanted to design the Entity Relationship Diagram (ERD) so that I could make us
 | A Team can play in Many Cups (and Many Teams can play in the same Cup) | @ManyToMany |
 
 ### Deciding Foreign Keys in a Relationship
-ManyToOne: 
+@ManyToOne: 
 - FK (and config) in Many (Child) side. 
 - If you want a bidirectional relationship, in Parent entity, must add List< Child > field  and map the corresponding @OneToMany annotation.
 
-e.g. Bi-directional Relationship
+Bi-directional Relationship Example:
 ```java
 public class Child {
 
@@ -66,12 +66,12 @@ public class Parent {
 }
 ```
 
-ManyToMany: 
+@ManyToMany: 
 - Need intermediate table (Join Table) with FK from both sides, which combine to form a composite key. 
 - This can be configured on either side in Java, but it is preferred to do the config in the Dependent entity.
 - For example, X can have many Y's AND Y can have many X's.
 
-e.g. Team (Independent) and Cup (Dependent) relationship
+Team (Independent) and Cup (Dependent) relationship Example:
 ```java
 public class Cup {
 
@@ -99,13 +99,13 @@ public class Team {
 }
 ```
 
-OneToOne / OneTo(Perhaps)One: 
+@OneToOne / OneTo(Perhaps)One: 
 - FK in any side. 
 - FK (config) preferred in Dependent entity (if one exists).
 - For example, a Student is independent of a Student Mentor,
   the Student Mentor only exists if the Student does. Therefore, Student Mentor dependent on Student.
 
-e.g. Student (Indepdendent) and Student Mentor (Dependent relationship
+Student (Indepdendent) and Student Mentor (Dependent relationship Example:
 ```java
 public class StudentMentor {
 
@@ -132,7 +132,7 @@ public class Student {
 NOTE: FK in Child/Dependent table references its PK in Parent/Independent table.
 
 Q) How to decide if you should have 1:1 table or merge the attributes into 1 table?
-
+<br>
 A) If data in one table is related to, BUT does NOT 'belong' to the entity described by the other, then keep separate.
 
 ## Spring Boot REST API
@@ -182,13 +182,146 @@ INSERT INTO team (name, city, manager)
 VALUES ('Manchester City F.C.', 'Manchester', 'Pep Guardiola');
 ```
 
-### Model/Entity Layer
+### Model / Entity Layer
 
 - Create a POJO for your Models/Entities.
 - This class (entity) will be registered with Hibernate with the correct JPA Annotations.
-- Can use Lombok annotations (@Data) to reduce boilerplate code.
-- Can use Java Validation annotations on fields (@NonBlank, @Emai, etc.)
+- Can add attributes (name, nullable, unique, etc.) to JPA Annotations (@Table, @Column, etc.) to add constraints to DB.
+- Can use Lombok annotations to reduce boilerplate code.
+
+NOTE: Be careful of Lombok - JPA integration.
+
+JPA Annotations with Lombok Example:
+
+```java
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "team")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "name", nullable = false, unique = true)
+    private String userName;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "bio")
+    private String bio;
+
+}
+```
 - [Link to understanding JPA Entities and Annotations](https://www.baeldung.com/jpa-entities)
+
+### DTO
+
+- DTO (data transfer object) is an object that carries data between processes.
+- DTOs for JPA entities generally contain a subset of entity attributes.
+- For example, if you need to expose only a few of the entity attributes via REST API, you can map entities to DTOs with those attributes and serialize only them.
+- Basically, DTOs allow you to decouple presentation/business logic layer from the data access layer.
+- Can use Lombok annotations to reduce boilerplate code.
+
+NOTE: [Can use JPA Buddy to generate DTOs](https://www.youtube.com/watch?v=_u-qn-R4DoA)
+<br>
+NOTE: DTOs solve Jackson JSON infinite recursion problem for bidirectional relationships.
+
+User Model vs. User DTO Example: 
+
+```java
+@Data
+public class User {
+    private String id;
+    private String name;
+    private String password;
+    private List<Role> roles;
+}
+
+@Data
+public class UserDto {
+    private String name;
+    private List<String> roles;
+}
+```
+
+- Can use DTOs to reference other entities via associations. 
+
+OwnerDto containing PetDto id and name Example:
+```java
+@Data
+public class OwnerDto implements Serializable {
+    private final Long ownerId;
+    private final String name;
+    private final String country;
+    private final List<PetDto> pets;
+
+    @Data
+    public static class PetDto implements Serializable {
+        private final Long petId;
+        private final String name;
+    }
+}
+```
+
+- Can use Java Bean Validation annotations on fields (@NonBlank, @Email, etc.) to validate user inputs.
+- Some annotations accept additional attributes, but the message attribute is common to all of them. This is the message that will usually be rendered when the value of the respective property fails validation.
+
+Java Bean Validation Example:
+```java
+public class UserDto {
+
+  @NotNull(message = "Name cannot be null")
+  private String name;
+
+  @NotEmpty
+  @Size(min = 8, message = "password should have at least 8 characters")
+  private String password;
+
+  @Size(min = 10, max = 200, message
+          = "About Me must be between 10 and 200 characters")
+  private String aboutMe;
+
+  @Min(value = 18, message = "Age should not be less than 18")
+  @Max(value = 150, message = "Age should not be greater than 150")
+  private int age;
+
+  @Email(message = "Email should be valid")
+  private String email;
+
+  // standard setters and getters 
+}
+```
+
+- [Link to Java Bean Validation Basics](https://www.baeldung.com/javax-validation#overview)
+
+
+### Mapper
+
+- Mapper is a technique to transfer data from DTOs to Entitys or vice versa.
+- MapStruct is a code generator that greatly simplifies the implementation of mappings.
+- When using MapStruct, you only define simple method signatures, converting Entity to DTO, DTO to Entity, List of Entity to List of DTOs.
+- MapStruct annotation (@Mapper) will generate implementation code for you during build time.
+
+NOTE: [Can use JPA Buddy to generate Mappers](https://www.youtube.com/watch?v=_u-qn-R4DoA)
+
+Example of Mapper class with MapStruct @Mapper Annotation:
+```java
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+    
+    UserDto userToUserDto (User user);
+    
+    List<UserDto> usersToUsersDto(List<User> users);
+    
+    User userDtoToUser(UserDto userDto);
+}
+```
+
 
 ### Repository Layer
 
@@ -215,56 +348,13 @@ List<Book> findByTitle(@Param("title") String title);
 Optional<Student> findStudentByEmail(String email);
 ```
 
-### DTO
+### Service Layer
 
-- A Data Transfer Object is an object that is used to encapsulate data, and send it from one subsystem of an application to another.
-- They are simple objects that should not contain any business logic or methods implementation that would require testing.
-- They are useful for hiding properties that clients are not supposed to view.
-- It’s meant to be used in remote calls to promote security and loose coupling. If applied to local systems, it’s just over-designing a simple feature.
-- Can use Lombok annotations (@Data) to reduce boilerplate code.
-- Can use Java Validation annotations on fields (@NonBlank, @Emai, etc.)
-
-NOTE: [Can use JPA Buddy to generate DTOs](https://www.youtube.com/watch?v=_u-qn-R4DoA)
-<br>
-NOTE: DTOs solve Jackson JSON infinite recursion problem for bidirectional relationships.
-
-e.g. User Model vs. User DTO
-
-```java
-@Data
-public class User {
-    private String id;
-    private String name;
-    private String password;
-    private List<Role> roles;
-}
-
-@Data
-public class UserDTO {
-    private String name;
-    private List<String> roles;
-}
-```
-
-### Mapper
-
-- Mapper is a technique to transfer data from DTOs to Entitys or vice versa.
-- When using MapStruct, you only define simple method signatures, converting Entity to DTO, DTO to Entity, List of Entity to List of DTOs. 
-- MapStruct annotation (@Mapper) will generate implementation code for you during build time.
-
-NOTE: [Can use JPA Buddy to generate Mappers](https://www.youtube.com/watch?v=_u-qn-R4DoA)
-
-```java
-@Mapper(componentModel = "spring")
-public interface UserMapper {
-    
-    UserDTO toUserDTO (User user);
-    
-    List<UserDTO> toUserDTOs(List<User> users);
-    
-    User toUser(UserDTO userDTO);
-}
-```
+- The Service is where all the implementation is done and interacts with the the repository (DB). 
+- The Service exposes methods that will be called from the Controller.
+- Here is where all the business logic code is implemented.
+- These are basic CRUD methods.
+- DTOs are injected in this layer, as any response being passed to the Controller must be in the form of a DTO.
 
 ### Exception Handling
 
@@ -273,13 +363,6 @@ public interface UserMapper {
 - [Spring Boot Tutorial | How To Handle Exceptions](https://www.youtube.com/watch?v=PzK4ZXa2Tbc&t=355s)
 - [Guide to Spring Boot REST API Error Handling](https://www.toptal.com/java/spring-boot-rest-api-error-handling)
 
-### Service Layer
-
-- The Service is where all the implementation is done and interacts with the the repository (DB). 
-- The Service exposes methods that will be called from the Controller.
-- Here is where all the business logic code is implemented.
-- These are basic CRUD methods.
-- DTOs are injected in this layer, as any response being passed to the Controller must be in the form of a DTO.
 
 ### Controller Layer
 
@@ -317,7 +400,7 @@ The Extra HTTP REST API calls for entity rships:
 
 Note: Servic Layer logic differs between @ManyToMany and @ManyToOne relationships
 
-e.g.
+For Example:
 
 @ManyToOne: To check if Child contains Parent (checking an Object)
 ```java
@@ -353,4 +436,13 @@ if (cup.getTeams.contains(team))
 - JPA Validation Annotations (@Valid, @NonBlank, @Email etc.)
 - In DTO
 
+### Lombok - JPA
+
+When working with JPA and Lombok, remember these rules:
+
+- Avoid using @EqualsAndHashCode and @Data with JPA entities
+- Always exclude lazy attributes when using @ToString
+- Don’t forget to add @NoArgsConstructor to entities with @Builder or @AllArgsConstructor.
+
+Source: [Lombok and JPA: What Could Go Wrong?](https://dzone.com/articles/lombok-and-jpa-what-may-go-wrong)
 
