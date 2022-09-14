@@ -2,15 +2,53 @@
 FCMS is a Spring Boot REST API for dealing with the management of Football Clubs.
 
 ## Table of Contents  
-[Motivation](#motivation)
+[1. Motivation](#1-motivation)
+<br>
+[2. REST API Design](#2-rest-api-design)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[2.1 ERD](#21-erd)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[2.2 Deciding Foreign Keys in a Relationship](#22-deciding-foreign-keys-in-a-relationship)
+<br>
+[3. Spring Boot REST API Development](#spring-boot-rest-api)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3.1 Project Setup](#31-project-setup)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3.1.1 Initialise Spring Boot Project](#311-initialise-spring-boot-project)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3.1.2 Connect Spring Boot to Database](#312-connect-spring-boot-to-database)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3.2 Model / Entity Layer](#32-model--entity-layer)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3.2.1 DTO](#321-dto)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3.2.2 Mapper](#322-mapper)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3.3 Repository Layer](#33-repository-layer)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3.4 Service Layer](#34-service-layer)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3.4.1 Exception Handling](#341-exception-handling)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3.5 Controller Layer](#35-controller-layer)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3.5.1 Extra CRUD Methods/Endpoints](#351-extra-crud-methodsendpoints)
+<br>
+[4. Extra Features to Consider](#4-extra-features-to-consider)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.1 Documentation](#41-documentation)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.2 Logging](#42-logging)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3 Testing](#43-testing)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.4 Security](#44-security)
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.5 Lombok - JPA](#45-lombok---jpa)
+<br>
 
-[ERD](#erd)
 
-[Spring Boot Rest API](#spring-boot-rest-api) 
-
-[Extra Features to Consider](#extra-features-to-consider) 
-
-## Motivation
+## 1. Motivation
 The purpose of this project is to grow my knowledge of Spring Boot. I plan to gradually implement new features to steadily grow my understanding of the framework, as well as concepts surrounding REST API development.
 
 ![Spring Boot Roadmap](Spring-Boot-Roadmap.png)
@@ -23,8 +61,9 @@ Designing my own application means that I can test my understanding and skills f
 
 I will be using this README.md file to add any notes, features, plans and details regarding the management of the entire project! This will essentially serve as a blueprint for any future Spring Boot REST APIs I plan to build! :)
 
-## ERD
+## 2. REST API Design
 
+### 2.1 ERD
 ![FCSM ERD](FCMS-ERD.png)
 
 I wanted to design the Entity Relationship Diagram (ERD) so that I could make use of all JPA relationships available.
@@ -37,7 +76,7 @@ I wanted to design the Entity Relationship Diagram (ERD) so that I could make us
 | A Team has 1 Stadium | @OneToOne |
 | A Team can play in Many Cups (and Many Teams can play in the same Cup) | @ManyToMany |
 
-### Deciding Foreign Keys in a Relationship
+### 2.2 Deciding Foreign Keys in a Relationship
 @ManyToOne: 
 - FK (and config) in Many (Child) side. 
 - If you want a bidirectional relationship, in Parent entity, must add List< Child > field  and map the corresponding @OneToMany annotation.
@@ -135,9 +174,11 @@ Q) How to decide if you should have 1:1 table or merge the attributes into 1 tab
 <br>
 A) If data in one table is related to, BUT does NOT 'belong' to the entity described by the other, then keep separate.
 
-## Spring Boot REST API
+## 3. Spring Boot REST API
 
-### Initialise Spring Boot Project
+### 3.1 Project Setup
+
+### 3.1.1 Initialise Spring Boot Project
 
 - [Spring Initalizr](https://start.spring.io) 
 - Maven, Java, Jar, 8
@@ -145,7 +186,7 @@ A) If data in one table is related to, BUT does NOT 'belong' to the entity descr
 - OPTIONAL: Spring Rest Dev Tools, REST Repos, Spring Web Services etc.
 - [Maven artifact and group naming conventions](https://stackoverflow.com/questions/23172586/maven-artifact-and-group-naming-conventions)
 
-### Connect Spring Boot to Database
+### 3.1.2 Connect Spring Boot to Database
 
 - Connect easily via Spring Data JPA.
 - Add information to applications.properties file to setup DB connections (and other features i.e. port).
@@ -182,7 +223,7 @@ INSERT INTO team (name, city, manager)
 VALUES ('Manchester City F.C.', 'Manchester', 'Pep Guardiola');
 ```
 
-### Model / Entity Layer
+### 3.2 Model / Entity Layer
 
 - Create a POJO for your Models/Entities.
 - This class (entity) will be registered with Hibernate with the correct JPA Annotations.
@@ -219,7 +260,7 @@ public class User {
 ```
 - [Link to understanding JPA Entities and Annotations](https://www.baeldung.com/jpa-entities)
 
-### DTO
+### 3.2.1 DTO
 
 - DTO (data transfer object) is an object that carries data between processes.
 - DTOs for JPA entities generally contain a subset of entity attributes.
@@ -300,7 +341,7 @@ public class UserDto {
 - [Link to Java Bean Validation Basics](https://www.baeldung.com/javax-validation#overview)
 
 
-### Mapper
+### 3.2.2 Mapper
 
 - Mapper is a technique to transfer data from DTOs to Entitys or vice versa.
 - MapStruct is a code generator that greatly simplifies the implementation of mappings.
@@ -322,56 +363,72 @@ public interface UserMapper {
 }
 ```
 
+### 3.3 Repository Layer
 
-### Repository Layer
-
+- This will interact with the underlying DB.
 - To program CRUD (and JPA) operations on Student entities, need to have a StudentRepository interface.
 - Spring Data provides a layer on top of JPA that offers convenient ways to reduce boiler plate code.
-- CrudRepository interface extends Repository to provide CRUD functionality.
+- CrudRepository interface extends Repository to provide CRUD functionality. 
 - JpaRepository interface extends CrudRepository to give us the JPA specific features.
 - For functions that are not already present in JpaRepo, add new methods/queries in the StudentRepository interface.
-- No method body is required, only the method signature, as Spring will provide the boilerplate code.
 - For simple queries, Spring can easily derive what the query should be from just the method name.
 - Example of simple query: 
 
 ```java
-List<Book> findByName(String name);
+public interface BookRepository extends JpaRepository<Book, Long> {
+  
+    List<Book> findByName(String name);
+
+}
 ```
 
 - For more complex queries, can annotate a repository method with the @Query annotation where the 	value contains the JPQL or SQL to execute.
 - Example of complex queries:
 ```java
-@Query("select b from Book b where upper(b.title) like concat('%',upper(:title), '%')")
-List<Book> findByTitle(@Param("title") String title);
+public interface BookRepository extends JpaRepository<Book, Long> {
+  
+    @Query("select b from Book b where upper(b.title) like concat('%',upper(:title), '%')")
+    List<Book> findByTitle(@Param("title") String title);
 
-@Query("SELECT s FROM Student s WHERE s.email = ?1")
-Optional<Student> findStudentByEmail(String email);
+}
+
+public interface StudentRepository extends JpaRepository<Student, Long> {
+    
+    @Query("SELECT s FROM Student s WHERE s.email = ?1")
+    Optional<Student> findStudentByEmail(String email);
+
+}
 ```
 
-### Service Layer
+### 3.4 Service Layer
 
-- The Service is where all the implementation is done and interacts with the the repository (DB). 
+- The Service is where all the implementation is done and interacts with the repository (DB) and controller.
+- It will only take the data from the controller layer and transfer it to the repository layer. It will also take the data from the repository layer and send it back to Controller Layer.
 - The Service exposes methods that will be called from the Controller.
 - Here is where all the business logic code is implemented.
 - These are basic CRUD methods.
 - DTOs are injected in this layer, as any response being passed to the Controller must be in the form of a DTO.
 
-### Exception Handling
+*For Implementation, see source code in this repo*
+
+### 3.4.1 Exception Handling
 
 - Handling errors correctly in APIs while providing meaningful error messages is a very desirable feature, as it can help the API client properly respond to issues. The default behavior tends to be returning stack traces that are hard to understand and ultimately useless for the API client.
-- Partitioning the error information into fields also enables the API client to parse it and provide better error messages to the user.
+- Partitioning the error information into fields enables the API client to parse it and provide better error messages to the user.
 - [Spring Boot Tutorial | How To Handle Exceptions](https://www.youtube.com/watch?v=PzK4ZXa2Tbc&t=355s)
 - [Guide to Spring Boot REST API Error Handling](https://www.toptal.com/java/spring-boot-rest-api-error-handling)
 
+*For Implementation, see source code in this repo*
 
-### Controller Layer
+### 3.5 Controller Layer
 
 - Now we can implement a controller class to define our API URLs and use the service class to manage data.
 - Different methods are defined in the controller, these methods will be called by different endpoints.
 - The endpoint methods in the Controller typically match those in its corresponding Service Layer.
 - Controller consumes (via endpoint) and responds (via service) with DTO's only.
 - Handles HTTP requests
-- Can use Java Validation annotations (@Valid) to enable validation in Controller layer.
+- Can use Java Bean Validation annotation (@Valid) to enable validation in Controller layer. 
+- The @Valid annotation ensures the validation of the whole object in a method argument.
 
 The Basic/Standard HTTP REST API calls:
 
@@ -383,12 +440,14 @@ The Basic/Standard HTTP REST API calls:
 |(PUT) updateEntityById|
 |(DELETE) deleteEntityById|
 
-### Extra CRUD Methods/Endpoints
+*For Implementation, see source code in this repo*
+
+### 3.5.1 Extra CRUD Methods/Endpoints
 
 - Once the basic CRUD methods are added to the Service/Controller layers, if the entity has relationships with other entities... Extra CRUD methods need to be implemented.
-- ManyToOne: logic in Child Service layer
-- OneToOne: Logic is either not required OR in the dependent entity Service layer (e.g. Student ID exists if Student does)
-- ManyToMany: logic in either side (or dependent side if applicable)
+- ManyToOne: logic in child service layer
+- OneToOne: logic is either not required OR in the dependent entity service layer (e.g. Student ID exists if Student does)
+- ManyToMany: logic in either side OR in the dependent side (if applicable)
 
 The Extra HTTP REST API calls for entity rships:
 
@@ -398,7 +457,10 @@ The Extra HTTP REST API calls for entity rships:
 | @OneToOne | (GET) viewDependentForIndependent <br> (POST) addDependentToIndependent <br> (DELETE) removeDependentFromIndependent |
 | @ManyToMany |  (GET) viewAllDependentsForIndependent <br> (POST) addDependentToIndependent <br> (DELETE) removeDependentFromIndependent |
 
-Note: Servic Layer logic differs between @ManyToMany and @ManyToOne relationships
+*For Implementation, see source code in this repo*
+
+
+Note: Service Layer logic differs between @ManyToMany and @ManyToOne relationships
 
 For Example:
 
@@ -411,32 +473,27 @@ if (Objects.nonNull(player.getTeam()))
 ```java
 if (cup.getTeams.contains(team))
 ```
-## Extra Features to Consider
+## 4. Extra Features to Consider
 
-### Documentation
+### 4.1 Documentation
 
 - Swagger/OpenAPI
 - Add annotations in Controller layer
 
-### Logging
+### 4.2 Logging
 
 - Slf4j in Exception Handler and Controller layer
 
-### Testing
+### 4.3 Testing
 
 - Unit Test: Controller(s) & Service(s) via JUnit & Mockito
 - Integration Testing: Endpoints (Controller) via Cucumber/Gherkin or MockMvc/RestTemplate/TestRestTemplate
 
-### Security
+### 4.4 Security
 
 - JWT
 
-### Validation
-
-- JPA Validation Annotations (@Valid, @NonBlank, @Email etc.)
-- In DTO
-
-### Lombok - JPA
+### 4.5 Lombok - JPA
 
 When working with JPA and Lombok, remember these rules:
 
