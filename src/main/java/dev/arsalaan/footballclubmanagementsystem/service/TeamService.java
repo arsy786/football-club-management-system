@@ -69,18 +69,10 @@ public class TeamService {
         Team team = teamRepository.findById(teamId).orElseThrow(
                 () -> new ApiRequestException("team with id " + teamId + " does not exist"));
 
-        // checks
-        if (teamDTO.getName() != null && teamDTO.getName().length() > 0 && !Objects.equals(team.getName(), teamDTO.getName())) {
-            team.setName(teamDTO.getName());
-        }
-
-        if (teamDTO.getCity() != null && teamDTO.getCity().length() > 0 && !Objects.equals(team.getCity(), teamDTO.getCity())) {
-            team.setCity(teamDTO.getCity());
-        }
-
-        if (teamDTO.getManager() != null && teamDTO.getManager().length() > 0 && !Objects.equals(team.getManager(), teamDTO.getManager())) {
-            team.setManager(teamDTO.getManager());
-        }
+        // no checks as @Valid in Controller used
+        team.setName(teamDTO.getName());
+        team.setCity(teamDTO.getCity());
+        team.setManager(teamDTO.getManager());
 
         // Team updatedTeam = teamRepository.save(team); - would need this if @Transactional not used
         // return teamMapper.toTeamDTO(updatedTeam); - would need this if response DTO was required

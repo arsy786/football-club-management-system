@@ -78,7 +78,7 @@ public class TeamController {
             @ApiResponse(responseCode = "400", description = "Team with ID does not exist", content = {@Content(mediaType = "application/json")})
     })
     @PutMapping("/{teamId}")
-    public ResponseEntity updateTeamById(@PathVariable("teamId") Long teamId, @RequestBody TeamDTO teamDTO) {
+    public ResponseEntity updateTeamById(@PathVariable("teamId") Long teamId, @Valid @RequestBody TeamDTO teamDTO) {
         teamService.updateTeamById(teamId, teamDTO);
         return ResponseEntity.ok().build();
     }

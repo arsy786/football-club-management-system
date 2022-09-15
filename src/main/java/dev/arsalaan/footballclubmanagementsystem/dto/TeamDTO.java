@@ -17,7 +17,6 @@ public class TeamDTO implements Serializable {
     @NotEmpty(message = "City should not be null or empty")
     private String city;
 
-    @NotEmpty(message = "Manager should not be null or empty")
     private String manager;
 
     private List<PlayerDTO> players;
