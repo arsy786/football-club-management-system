@@ -557,10 +557,10 @@ For details on best practices: [Logging Best Practices](https://tuhrig.de/my-log
 
 *For code implementation example(s) check:*
 [TeamController.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/controller/TeamController.java), 
-[TeamService.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/service/TeamService.java) 
-and
+[TeamService.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/service/TeamService.java),
 [ApiExceptionHandler.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/exception/ApiExceptionHandler.java)
-
+and
+[application.properties](https://github.com/arsy786/football-club-management-system/blob/master/src/main/resources/application.properties)
 
 ### 4.3 Testing
 
