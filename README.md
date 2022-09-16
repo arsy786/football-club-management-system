@@ -482,17 +482,36 @@ if (cup.getTeams.contains(team))
 ### 4.1 Documentation
 
 - Swagger/OpenAPI
-- Add annotations in Controller layer
+- Can add annotations (@Operation, @ApiResponses, @ApiResponse) in Controller layer to add more description to API.
+- [Can add @OpenAPIDefinition to add custom information about your APIs](https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations#OpenAPIDefinition)
+- [Documenting a Spring REST API Using OpenAPI 3.0](https://www.baeldung.com/spring-rest-openapi-documentation)
+- [How to change the URL for the OpenAPI doc and/or Swagger page](https://medium.com/javarevisited/part-1-how-to-add-openapi-3-0-and-swagger-to-spring-boot-application-35c96422e94b)
 
 ### 4.2 Logging
 
-- Slf4j in Exception Handler and Controller layer
+- Server logs record the activities or events that the system is performing at any given point in time.
+- Each log entry contains information such as the timestamp, the actual method being called, a custom log message, and other contextual information. 
+- Each log entry also includes an identifier called a logging level.
+- Logging in Spring Boot easily done without having to declare a constant logger class by using @Slf4j Annotation.
+- Logs made in Exception Handler, Controller layer and Service layer.
+- Can configure Logback (default for SB) settings in application.properties or elsewhere.
+- Log Levels: ERROR, WARN, INFO, DEBUG, TRACE
+
+For details on implementation: [Logging in Spring Boot with SLF4J](https://stackabuse.com/guide-to-logging-in-spring-boot/)
+<br>
+For details on best practices: [Logging Best Practices](https://tuhrig.de/my-logging-best-practices/)
+<br>
+For code examples check: 
+[TeamController.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/controller/TeamController.java), 
+[TeamService.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/service/TeamService.java) 
+and
+[ApiExceptionHandler.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/exception/ApiExceptionHandler.java)
+
 
 ### 4.3 Testing
 
 - Unit Test: Controller(s) & Service(s) via JUnit & Mockito
 - Integration Testing: Endpoints (Controller) via Cucumber/Gherkin or MockMvc/RestTemplate/TestRestTemplate
-
 ### 4.4 Security
 
 - JWT
@@ -504,6 +523,9 @@ When working with JPA and Lombok, remember these rules:
 - Avoid using @EqualsAndHashCode and @Data with JPA entities
 - Always exclude lazy attributes when using @ToString
 - Don’t forget to add @NoArgsConstructor to entities with @Builder or @AllArgsConstructor.
+
+NOTE: Using @Data with DTO's is okay
+
 
 Source: [Lombok and JPA: What Could Go Wrong?](https://dzone.com/articles/lombok-and-jpa-what-may-go-wrong)
 
