@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping("/api/v1/team")
 public class TeamController {
 
@@ -32,12 +34,15 @@ public class TeamController {
     @GetMapping("/")
     public ResponseEntity<List<TeamDTO>> getAllTeams() {
 
+        log.info("Received GET /api/v1/team/ request.");
+
         List<TeamDTO> teamsDTO = teamService.getAllTeams();
 
         if (teamsDTO == null || teamsDTO.isEmpty()) {
             return new ResponseEntity<>(teamsDTO, HttpStatus.NO_CONTENT);
         }
 
+        log.debug("Posted service response for getAllTeams.");
         return ResponseEntity.ok(teamsDTO);
     }
 
@@ -50,12 +55,15 @@ public class TeamController {
     @GetMapping("/{teamId}")
     public ResponseEntity<TeamDTO> getTeamById(@PathVariable("teamId") Long teamId) {
 
+        log.info("Received GET /api/v1/team/{} request.", teamId);
+
         TeamDTO teamDTO = teamService.getTeamById(teamId);
 
         if (teamDTO == null) {
             return new ResponseEntity("Team with id " + teamId + " is empty", HttpStatus.NOT_FOUND);
         }
 
+        log.debug("Posted service response for getTeamById.");
         return new ResponseEntity<TeamDTO>(teamDTO, HttpStatus.OK);
     }
 
@@ -67,7 +75,12 @@ public class TeamController {
     })
     @PostMapping("/")
     public ResponseEntity createTeam(@Valid @RequestBody TeamDTO teamDTO) {
+
+        log.info("Received POST /api/v1/team/ request.");
+
         teamService.createTeam(teamDTO);
+
+        log.debug("Posted service response for createTeam.");
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -79,7 +92,12 @@ public class TeamController {
     })
     @PutMapping("/{teamId}")
     public ResponseEntity updateTeamById(@PathVariable("teamId") Long teamId, @Valid @RequestBody TeamDTO teamDTO) {
+
+        log.info("Received PUT /api/v1/team/{} request.", teamId);
+
         teamService.updateTeamById(teamId, teamDTO);
+
+        log.debug("Posted service response for updateTeamById.");
         return ResponseEntity.ok().build();
     }
 
@@ -91,7 +109,12 @@ public class TeamController {
     })
     @DeleteMapping("/{teamId}")
     public ResponseEntity deleteTeamById(@PathVariable("teamId") Long teamId) {
+
+        log.info("Received DELETE /api/v1/team/{} request.", teamId);
+
         teamService.deleteTeamById(teamId);
+
+        log.debug("Posted service response for deleteTeamById.");
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -105,25 +128,33 @@ public class TeamController {
     @GetMapping("/league/{leagueId}")
     public ResponseEntity<List<TeamDTO>> viewAllTeamsForLeague(@PathVariable("leagueId") Long leagueId) {
 
+        log.info("Received GET /api/v1/team/league/{} request.", leagueId);
+
         List<TeamDTO> teamsDTO = teamService.viewAllTeamsForLeague(leagueId);
 
         if (teamsDTO == null || teamsDTO.isEmpty()) {
             return new ResponseEntity<>(teamsDTO, HttpStatus.NO_CONTENT);
         }
 
+        log.debug("Posted service response for viewAllTeamsForLeague.");
         return ResponseEntity.ok(teamsDTO);
     }
 
-    // [POST] Add a Team to a specific League
+    // [PUT] Add a Team to a specific League
     @Operation(summary = "This is to add a Team to a League by their ID's")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Added the Team to League with ID from Db", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "400", description = "Team/League with ID does not exist", content = {@Content(mediaType = "application/json")})
     })
-    @PostMapping("/{teamId}/league/{leagueId}")
+    @PutMapping("/{teamId}/league/{leagueId}")
     public ResponseEntity addTeamToLeague(@PathVariable("leagueId") Long leagueId,
                                           @PathVariable("teamId") Long teamId) {
+
+        log.info("Received POST /api/v1/team/{}/league/{} request.", teamId, leagueId);
+
         teamService.addTeamToLeague(leagueId, teamId);
+
+        log.debug("Posted service response for addTeamToLeague.");
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -136,7 +167,12 @@ public class TeamController {
     @DeleteMapping("/{teamId}/league/{leagueId}")
     public ResponseEntity removeTeamFromLeague(@PathVariable("leagueId") Long leagueId,
                                                    @PathVariable("teamId") Long teamId) {
+
+        log.info("Received DELETE /api/v1/team/{}/league/{} request.", teamId, leagueId);
+
         teamService.removeTeamFromLeague(leagueId, teamId);
+
+        log.debug("Posted service response for removeTeamFromLeague.");
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

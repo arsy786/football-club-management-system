@@ -7,6 +7,7 @@ import dev.arsalaan.footballclubmanagementsystem.model.League;
 import dev.arsalaan.footballclubmanagementsystem.model.Team;
 import dev.arsalaan.footballclubmanagementsystem.repository.LeagueRepository;
 import dev.arsalaan.footballclubmanagementsystem.repository.TeamRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,6 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class TeamService {
 
     private final TeamRepository teamRepository;
@@ -30,6 +32,8 @@ public class TeamService {
     // [GET] View All Teams
     public List<TeamDTO> getAllTeams() {
         List<Team> teams = teamRepository.findAll();
+
+        log.info("From DB, Got Teams");
         return teamMapper.toTeamDTOs(teams);
     }
 
@@ -39,6 +43,7 @@ public class TeamService {
         Team team = teamRepository.findById(teamId).orElseThrow(
                 () -> new ApiRequestException("team with id " + teamId + " does not exist"));
 
+        log.info("From DB, Got Team with id: {}", teamId);
         return teamMapper.toTeamDTO(team);
     }
 
@@ -59,6 +64,7 @@ public class TeamService {
         // TeamDTO newTeamDTO = teamRepository.save(team); - would need this if response to method call was TeamDTO
 
         teamRepository.save(team);
+        log.info("In DB, Created new Team with generated id: {}", team.getTeamId());
     }
 
     // [PUT] Update a specific Team by its ID
@@ -75,8 +81,10 @@ public class TeamService {
         team.setManager(teamDTO.getManager());
 
         // Team updatedTeam = teamRepository.save(team); - would need this if @Transactional not used
-        // return teamMapper.toTeamDTO(updatedTeam); - would need this if response DTO was required
 
+        log.info("From DB, Updated Team with id: {}", teamId);
+
+        // return teamMapper.toTeamDTO(updatedTeam); - would need this if response DTO was required
     }
 
     // [DELETE] Remove a specific Team by its ID
@@ -90,6 +98,7 @@ public class TeamService {
         }
 
         teamRepository.deleteById(teamId);
+        log.info("From DB, Deleted Team with id: {}", teamId);
     }
 
     // [GET] View All Teams for League ID
@@ -98,10 +107,11 @@ public class TeamService {
         League league = leagueRepository.findById(leagueId).orElseThrow(
                 () -> new ApiRequestException("League with id " + leagueId + " does not exist"));
 
+        log.info("From DB, Retrieved Teams with League id: {}", leagueId);
         return teamMapper.toTeamDTOs(league.getTeams());
     }
 
-    // [POST] Add a Team to a specific League
+    // [PUT] Add a Team to a specific League
     @Transactional
     public void addTeamToLeague(Long leagueId, Long teamId) {
 
@@ -115,6 +125,7 @@ public class TeamService {
         }
 
         team.setLeague(league);
+        log.info("From DB, Added Team with id: {} to League with id: {}", teamId, leagueId);
     }
 
     // [DELETE] Remove a specific Team from a League
@@ -135,6 +146,7 @@ public class TeamService {
         }
 
         team.setLeague(null); // sets league field in team to null instead of removing the parents AND deleting child
+        log.info("From DB, Removed Team with id: {} from League with id: {}", teamId, leagueId);
     }
 
 }

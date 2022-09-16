@@ -1,5 +1,6 @@
 package dev.arsalaan.footballclubmanagementsystem.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ not just to an individual controller.
  */
 
 @ControllerAdvice
+@Slf4j
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     /* Provides handling for exceptions throughout this service.
@@ -39,7 +41,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
 
-        // 2. Return response entity
+        // log error in console/file
+        log.error("An exception error has occurred with message: {}", ex.getMessage());
+
+        // 2. Return response entity to client
         return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
     }
 
@@ -56,8 +61,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 ZonedDateTime.now(ZoneId.of("Z")));
 
+        log.error("Validation error has occurred with message: {}", ex.getBindingResult().getFieldErrors());
+
         return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
-    }
+}
 
     // other exception handlers can be added here
     // (e.g. handleEntityNotFoundException, handleHttpMessageNotReadable,
