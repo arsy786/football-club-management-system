@@ -457,9 +457,9 @@ The Extra HTTP REST API calls for entity rships:
 
 | Entity Relationship | Extra CRUD Methods/Endpoints|
 | ----------- | ----------- |
-| @ManyToOne |  (GET) viewAllChildrenForParent <br> (POST) addChildToParent <br> (DELETE) removeChildFromParent |
-| @OneToOne | (GET) viewDependentForIndependent <br> (POST) addDependentToIndependent <br> (DELETE) removeDependentFromIndependent |
-| @ManyToMany |  (GET) viewAllDependentsForIndependent <br> (POST) addDependentToIndependent <br> (DELETE) removeDependentFromIndependent |
+| @ManyToOne |  (GET) viewAllChildrenForParent <br> (PUT) addChildToParent <br> (DELETE) removeChildFromParent |
+| @OneToOne | (GET) viewDependentForIndependent <br> (PUT) addDependentToIndependent <br> (DELETE) removeDependentFromIndependent |
+| @ManyToMany |  (GET) viewAllDependentsForIndependent <br> (PUT) addDependentToIndependent <br> (DELETE) removeDependentFromIndependent |
 
 *For Implementation, see source code in this repo*
 
