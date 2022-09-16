@@ -53,9 +53,9 @@ The purpose of this project is to grow my knowledge of Spring Boot. I plan to gr
 
 ![Spring Boot Roadmap](Spring-Boot-Roadmap.png)
 
-I came across a 'Spring Boot Roadmap' and used it as a guide to structure my learning. After boring myself with watching many hours of courses/tutorials  and reading plenty of articles/forums on basic 1 entity REST APIs that lacked any progression in complexity, I realised that I actually did not know how to apply ANY of the new concepts I had 'learnt'. 
+I came across a 'Spring Boot Roadmap' and used it as a guide to structure my learning. After boring myself with watching many hours of courses/tutorials and reading plenty of articles/forums limited to basic 1 entity REST APIs (that lacked any progression in complexity), I realised that I actually did not know how to apply ANY of the new concepts I had 'learnt'. 
 
-Eventually, I decided that the best way to grasp these concepts was to actually implement the theory & guides into a project that interests me (and is also designed by me)! 
+Eventually, I decided that the best way to grasp these concepts would be to actually implement the theory & guides into a project that interests me (and is also designed by me)! 
 
 Designing my own application means that I can test my understanding and skills from the very ground up. I am a fan of football therefore the idea of building the FCMS REST API came natural to me.
 
@@ -70,18 +70,24 @@ I wanted to design the Entity Relationship Diagram (ERD) so that I could make us
 
 | Description | JPA Relationship|
 | ----------- | ----------- |
-| A Team has Many Players | @OneToMany |
-| Many Teams play in 1 League| @ManyToOne |
-| A Team has 1 Owner | @OneToOne |
-| A Team has 1 Stadium | @OneToOne |
-| A Team can play in Many Cups (and Many Teams can play in the same Cup) | @ManyToMany |
+| **A** Team has **many** Players | @OneToMany |
+| **Many** Teams play in **a** League| @ManyToOne |
+| **A** Team has **an** Owner | @OneToOne |
+| **A** Team has **a** Stadium | @OneToOne |
+| **A** Team plays in **many** Cups AND **a** Cup has **many** Teams | @ManyToMany |
+
+Another way of describing the above, **a** Team can play in **many** Cups (and **many** Teams can play in the **same** Cup)
+
+
+NOTE: @ManyToMany = @OneToMany + @ManyToOne
+
 
 ### 2.2 Deciding Foreign Keys in a Relationship
 @ManyToOne: 
 - FK (and config) in Many (Child) side. 
-- If you want a bidirectional relationship, in Parent entity, must add List< Child > field  and map the corresponding @OneToMany annotation.
+- If you want a bidirectional relationship, must add List< Child > field  and map the corresponding @OneToMany annotation in Parent entity.
 
-Bi-directional Relationship Example:
+Bi-directional relationship example:
 ```java
 public class Child {
 
@@ -105,12 +111,43 @@ public class Parent {
 }
 ```
 
+@OneToOne / OneTo(Perhaps)One:
+- FK in either side.
+- FK preferred in Dependent entity (if one exists).
+- Example of independent/dependent entity: a *Student is independent of a Student Mentor*,
+  the **Student Mentor only exists if the Student does**. Therefore, *Student Mentor is dependent on Student*.
+
+Student (Independent) and Student Mentor (Dependent) relationship Example:
+```java
+public class StudentMentor {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long studentMentorId;
+
+    @OneToOne
+    @JoinColumn(name = "student_id", referencedColumnName = "studentId") //fk
+    private Student student;
+}
+
+public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long studentId;
+
+    @OneToOne(mappedBy = "student")
+    private StudentMentor studentMentor;
+}
+```
+
 @ManyToMany: 
 - Need intermediate table (Join Table) with FK from both sides, which combine to form a composite key. 
 - This can be configured on either side in Java, but it is preferred to do the config in the Dependent entity.
-- For example, X can have many Y's AND Y can have many X's.
+- Example of a ManyToMany relationship: X can have many Y's AND Y can have many X's.
+- Cup is the dependent entity as Cups only exist if the Teams do.
 
-Team (Independent) and Cup (Dependent) relationship Example:
+Team (Independent) and Cup (Dependent) relationship example:
 ```java
 public class Cup {
 
@@ -138,47 +175,17 @@ public class Team {
 }
 ```
 
-@OneToOne / OneTo(Perhaps)One: 
-- FK in any side. 
-- FK (config) preferred in Dependent entity (if one exists).
-- For example, a Student is independent of a Student Mentor,
-  the Student Mentor only exists if the Student does. Therefore, Student Mentor dependent on Student.
-
-Student (Indepdendent) and Student Mentor (Dependent relationship Example:
-```java
-public class StudentMentor {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long studentMentorId;
-
-    @OneToOne
-    @JoinColumn(name = "student_id", referencedColumnName = "studentId") //fk
-    private Student student;
-}
-
-public class Student {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long studentId;
-
-    @OneToOne(mappedBy = "student")
-    private StudentMentor studentMentor;
-}
-```
-
 NOTE: FK in Child/Dependent table references its PK in Parent/Independent table.
 
-Q) How to decide if you should have 1:1 table or merge the attributes into 1 table?
+Q) How to decide if you should have @OneToOne table or merge the attributes into 1 table?
 <br>
 A) If data in one table is related to, BUT does NOT 'belong' to the entity described by the other, then keep separate.
 
 ## 3. Spring Boot REST API
 
-*DISCLAIMER: All features (Entity, DTO, Controller, etc.) associated with 'Team' will aim to maintain the highest coding standards; implement the most concepts; and contain the most detail in regard to complying with REST API development standards.*
+*DISCLAIMER: All features (Entity, DTO, Controller, etc.) associated with 'Team' will aim to maintain the highest coding standards; implement the most concepts/features; and contain the most detail in regard to complying with REST API development standards.*
 
-*Features associated with other Models (Player, Owner, etc.) will only contain what is necessary and convenient for a project of this scale e.g. other Controllers will not contain OpenAPI documentation simply for convenience, code readability and reusability.*
+*Features associated with other Models (Player, Owner, etc.) will only contain what is necessary and convenient for a project of this scale e.g. other Controllers will not contain OpenAPI documentation simply for convenience, code readability and code reusability.*
 
 ### 3.1 Project Setup
 
@@ -187,13 +194,13 @@ A) If data in one table is related to, BUT does NOT 'belong' to the entity descr
 - [Spring Initalizr](https://start.spring.io) 
 - Maven, Java, Jar, 8
 - MUST: Spring Web, Spring Data JPA, Database (H2, Mongo, etc.)
-- OPTIONAL: Spring Rest Dev Tools, REST Repos, Spring Web Services etc.
+- OPTIONAL: Spring Rest Dev Tools, REST Repos, Spring Web Services, etc.
 - [Maven artifact and group naming conventions](https://stackoverflow.com/questions/23172586/maven-artifact-and-group-naming-conventions)
 
 ### 3.1.2 Connect Spring Boot to Database
 
 - Connect easily via Spring Data JPA.
-- Add information to applications.properties file to setup DB connections (and other features i.e. port).
+- Add configuration to applications.properties file to setup DB connections (and other features i.e. port).
 - Example of H2 database connection setup with console enabled and data pre-loaded: 
 ```properties
 server.port=8080
@@ -230,13 +237,13 @@ VALUES ('Manchester City F.C.', 'Manchester', 'Pep Guardiola');
 ### 3.2 Model / Entity Layer
 
 - Create a POJO for your Models/Entities.
-- This class (entity) will be registered with Hibernate with the correct JPA Annotations.
+- This class (entity) will be registered with Hibernate as result of implementing JPA Annotations.
 - Can add attributes (name, nullable, unique, etc.) to JPA Annotations (@Table, @Column, etc.) to add constraints to DB.
 - Can use Lombok annotations to reduce boilerplate code.
 
-NOTE: Be careful of Lombok - JPA integration.
+NOTE: [Be careful of Lombok - JPA integration](#45-lombok---jpa)
 
-JPA Annotations with Lombok Example:
+JPA Annotations with Lombok example:
 
 ```java
 @Getter
@@ -264,6 +271,12 @@ public class User {
 ```
 - [Link to understanding JPA Entities and Annotations](https://www.baeldung.com/jpa-entities)
 
+*For code implementation example(s) check:*
+[Team.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/model/Team.java)
+or
+[Cup.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/model/Cup.java)
+
+
 ### 3.2.1 DTO
 
 - DTO (data transfer object) is an object that carries data between processes.
@@ -276,7 +289,7 @@ NOTE: [Can use JPA Buddy to generate DTOs](https://www.youtube.com/watch?v=_u-qn
 <br>
 NOTE: DTOs solve Jackson JSON infinite recursion problem for bidirectional relationships.
 
-User Model vs. User DTO Example: 
+User model vs. UserDto example: 
 
 ```java
 @Data
@@ -296,7 +309,7 @@ public class UserDto {
 
 - Can use DTOs to reference other entities via associations. 
 
-OwnerDto containing PetDto id and name Example:
+OwnerDto containing PetDto id and name example:
 ```java
 @Data
 public class OwnerDto implements Serializable {
@@ -316,7 +329,7 @@ public class OwnerDto implements Serializable {
 - Can use Java Bean Validation annotations on fields (@NonBlank, @Email, etc.) to validate user inputs.
 - Some annotations accept additional attributes, but the message attribute is common to all of them. This is the message that will usually be rendered when the value of the respective property fails validation.
 
-Java Bean Validation Example:
+Java Bean Validation example:
 ```java
 public class UserDto {
 
@@ -344,6 +357,11 @@ public class UserDto {
 
 - [Link to Java Bean Validation Basics](https://www.baeldung.com/javax-validation#overview)
 
+*For code implementation example(s) check:*
+[TeamDTO.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/dto/TeamDTO.java)
+or
+[CupDTO.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/dto/CupDTO.java)
+
 
 ### 3.2.2 Mapper
 
@@ -367,6 +385,12 @@ public interface UserMapper {
 }
 ```
 
+*For code implementation example(s) check:*
+[TeamMapper.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/mapper/TeamMapper.java)
+or
+[CupMapper.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/mapper/CupMapper.java)
+
+
 ### 3.3 Repository Layer
 
 - This will interact with the underlying DB.
@@ -376,7 +400,8 @@ public interface UserMapper {
 - JpaRepository interface extends CrudRepository to give us the JPA specific features.
 - For functions that are not already present in JpaRepo, add new methods/queries in the StudentRepository interface.
 - For simple queries, Spring can easily derive what the query should be from just the method name.
-- Example of simple query: 
+
+Example of a simple query: 
 
 ```java
 public interface BookRepository extends JpaRepository<Book, Long> {
@@ -387,7 +412,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 ```
 
 - For more complex queries, can annotate a repository method with the @Query annotation where the 	value contains the JPQL or SQL to execute.
-- Example of complex queries:
+
+Example of complex queries:
 ```java
 public interface BookRepository extends JpaRepository<Book, Long> {
   
@@ -404,16 +430,27 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 }
 ```
 
+*For code implementation example(s) check:*
+[TeamRepository.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/repository/TeamRepository.java)
+or
+[CupRepository.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/repository/CupRepository.java)
+
+
 ### 3.4 Service Layer
 
-- The Service is where all the implementation is done and interacts with the repository (DB) and controller.
-- It will only take the data from the controller layer and transfer it to the repository layer. It will also take the data from the repository layer and send it back to Controller Layer.
+- The Service is where all the implementation is done, and it interacts with the Repository (DB) and Controller layers.
+- It will only take the data from the Controller layer and transfer it to the Repository layer. 
+- It will also take the data from the Repository layer and send it back to the Controller layer.
 - The Service exposes methods that will be called from the Controller.
-- Here is where all the business logic code is implemented.
-- These are basic CRUD methods.
-- DTOs are injected in this layer, as any response being passed to the Controller must be in the form of a DTO.
+- This layer is where all the business logic code is implemented, which consists of basic CRUD methods. 
 
-*For Implementation, see source code in this repo*
+NOTE: DTOs are injected in this layer, as any response being passed to the Controller must be in the form of a DTO.
+
+*For code implementation example(s) check:*
+[TeamService.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/service/TeamService.java)
+or
+[CupService.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/service/CupService.java)
+
 
 ### 3.4.1 Exception Handling
 
@@ -422,51 +459,62 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 - [Spring Boot Tutorial | How To Handle Exceptions](https://www.youtube.com/watch?v=PzK4ZXa2Tbc&t=355s)
 - [Guide to Spring Boot REST API Error Handling](https://www.toptal.com/java/spring-boot-rest-api-error-handling)
 
-*For Implementation, see source code in this repo*
+*For code implementation example(s) check:*
+[.../exception/](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/exception/)
+
 
 ### 3.5 Controller Layer
 
-- Now we can implement a controller class to define our API URLs and use the service class to manage data.
-- Different methods are defined in the controller, these methods will be called by different endpoints.
-- The endpoint methods in the Controller typically match those in its corresponding Service Layer.
+- Now we can implement a Controller class to define our API URLs and use the Service class to manage data.
+- Different methods are defined in the Controller, these methods will be called by different endpoints.
+- The endpoint methods in the Controller typically match those in its corresponding Service layer.
 - Controller consumes (via endpoint) and responds (via service) with DTO's only.
-- Handles HTTP requests
-- Can use Java Bean Validation annotation (@Valid) to enable validation in Controller layer. 
-- The @Valid annotation ensures the validation of the whole object in a method argument.
+- Handles HTTP requests.
+- Can use Java Bean Validation Annotation (@Valid) to enable validation within the Controller layer. 
+- The @Valid Annotation ensures the validation of an object passed as a method argument.
 
-The Basic/Standard HTTP REST API calls:
+The Basic/Standard HTTP REST API calls and their corresponding methods:
 
-| Basic HTTP Calls 
-| ----------- | 
-|(GET) getAllEntities|
-|(GET) getEntityById|
-|(POST) createEntity|
-|(PUT) updateEntityById|
-|(DELETE) deleteEntityById|
+| Endpoint | Method |
+| ----------- | ----------- |
+|(GET) api/v1/entity/ | getAllEntities |
+|(GET) api/v1/entity/{entityId} | getEntityById |
+|(POST) api/v1/entity | createEntity |
+|(PUT) api/v1/entity/{entityId} | updateEntityById |
+|(DELETE) api/v1/entity/{entityId} | deleteEntityById |
 
-*For Implementation, see source code in this repo*
+*For code implementation example(s) check:*
+[TeamController.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/controller/TeamController.java)
+or
+[CupController.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/controller/CupController.java)
 
 ### 3.5.1 Extra CRUD Methods/Endpoints
 
 - Once the basic CRUD methods are added to the Service/Controller layers, if the entity has relationships with other entities... Extra CRUD methods need to be implemented.
-- ManyToOne: logic in child service layer
-- OneToOne: logic is either not required OR in the dependent entity service layer (e.g. Student ID exists if Student does)
-- ManyToMany: logic in either side OR in the dependent side (if applicable)
+- @ManyToOne: logic in Child Service layer
+- @OneToOne: logic is either not required OR in the Dependent entity service layer (e.g. Student Mentor exists if Student does)
+- @ManyToMany: logic in either side OR in the Dependent side (if applicable)
 
 The Extra HTTP REST API calls for entity rships:
 
-| Entity Relationship | Extra CRUD Methods/Endpoints|
-| ----------- | ----------- |
-| @ManyToOne |  (GET) viewAllChildrenForParent <br> (PUT) addChildToParent <br> (DELETE) removeChildFromParent |
-| @OneToOne | (GET) viewDependentForIndependent <br> (PUT) addDependentToIndependent <br> (DELETE) removeDependentFromIndependent |
-| @ManyToMany |  (GET) viewAllDependentsForIndependent <br> (PUT) addDependentToIndependent <br> (DELETE) removeDependentFromIndependent |
+| Entity Relationship | Endpoints | Extra CRUD Methods| 
+| ----------- | ----------- | ----------- |
+| @ManyToOne | (GET) api/v1/child/parent/{parentId} <br> (PUT) api/v1/child/{childId}/parent/{parentId} <br> (DELETE) api/v1/child/{childId}/parent/{parentId} | viewAllChildrenForParent <br> addChildToParent <br> removeChildFromParent
+| @OneToOne |  (GET) api/v1/dependent/independent/{independentId} <br> (PUT)api/v1/dependent/{dependentId}/independent/{independentId} <br> (DELETE) api/v1/dependent/{dependentId}/independent/{independentId}| viewDependentForIndependent <br> addDependentToIndependent <br> removeDependentFromIndependent
+| @ManyToMany |  (GET) api/v1/dependent/independent/{independentId} <br> (PUT)api/v1/dependent/{dependentId}/independent/{independentId} <br> (DELETE) api/v1/dependent/{dependentId}/independent/{independentId} | viewAllDependentsForIndependent <br> addDependentToIndependent <br> removeDependentFromIndependent
 
-*For Implementation, see source code in this repo*
+*For code implementation example(s) check:*
+<br>
+[@ManyToOne (League) - TeamController.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/controller/TeamController.java)
+<br>
+[@OneToOne (Team) - OwnerController.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/controller/OwnerController.java)
+<br>
+[@ManyToMany (Team) - CupController.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/controller/CupController.java)
 
 
-Note: Service Layer logic differs between @ManyToMany and @ManyToOne relationships
+Note: Service layer logic differs between @ManyToMany and @ManyToOne relationships
 
-For Example:
+For example -
 
 @ManyToOne: To check if Child contains Parent (checking an Object)
 ```java
@@ -482,10 +530,15 @@ if (cup.getTeams.contains(team))
 ### 4.1 Documentation
 
 - Swagger/OpenAPI
-- Can add annotations (@Operation, @ApiResponses, @ApiResponse) in Controller layer to add more description to API.
+- Can add annotations (@Operation, @ApiResponses, @ApiResponse) in Controller layer to add more info to API description.
 - [Can add @OpenAPIDefinition to add custom information about your APIs](https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations#OpenAPIDefinition)
 - [Documenting a Spring REST API Using OpenAPI 3.0](https://www.baeldung.com/spring-rest-openapi-documentation)
 - [How to change the URL for the OpenAPI doc and/or Swagger page](https://medium.com/javarevisited/part-1-how-to-add-openapi-3-0-and-swagger-to-spring-boot-application-35c96422e94b)
+
+*For code implementation example(s) check:*
+[TeamController.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/controller/TeamController.java)
+and
+[SwaggerConfig.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/config/SwaggerConfig.java)
 
 ### 4.2 Logging
 
@@ -500,8 +553,9 @@ if (cup.getTeams.contains(team))
 For details on implementation: [Logging in Spring Boot with SLF4J](https://stackabuse.com/guide-to-logging-in-spring-boot/)
 <br>
 For details on best practices: [Logging Best Practices](https://tuhrig.de/my-logging-best-practices/)
-<br>
-For code examples check: 
+
+
+*For code implementation example(s) check:*
 [TeamController.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/controller/TeamController.java), 
 [TeamService.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/service/TeamService.java) 
 and
@@ -526,6 +580,9 @@ When working with JPA and Lombok, remember these rules:
 
 NOTE: Using @Data with DTO's is okay
 
-
 Source: [Lombok and JPA: What Could Go Wrong?](https://dzone.com/articles/lombok-and-jpa-what-may-go-wrong)
 
+*For code implementation example(s) check:*
+[Team.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/model/Team.java)
+and
+[TeamDTO.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/dto/TeamDTO.java)
