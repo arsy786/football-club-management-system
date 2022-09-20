@@ -1,5 +1,6 @@
 package dev.arsalaan.footballclubmanagementsystem.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -7,6 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
+@Builder
 public class TeamDTO implements Serializable {
 
     private Long teamId;
