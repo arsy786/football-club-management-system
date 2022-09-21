@@ -25,6 +25,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+// Requires @InjectMocks for Service (want to inject a mocked object into another mocked object).
+// Service is dependent on Repository (and Mapper), so we can mock these classes using Mockito Annotation @Mock.
+
 @ExtendWith(MockitoExtension.class)
 public class TeamServiceTest {
 

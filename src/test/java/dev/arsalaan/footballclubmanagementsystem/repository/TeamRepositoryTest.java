@@ -14,6 +14,12 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// Requires DB configuration in applications.properties in resource test folder.
+// Need @DataJpaTest annotation (provides some standard setup needed for testing the persistence layer).
+// Need @AutoConfigureTestDatabase annotation (applied to a test class to configure a test database to use instead of the application-defined or auto-configured DataSource).
+// Need to @Autowired Repository (as we are testing this).
+
+
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)

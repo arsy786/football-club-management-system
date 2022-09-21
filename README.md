@@ -566,21 +566,51 @@ and
 
 ### 4.3 Testing
 
-- There are 4 levels to Testing: Unit Testing, Integration Testing, System Testing (SIT) and Acceptance Testing (UAT).
-- Test Driver Development (TDD) philosophy is Arrange, Act, Assert (AAA).
-- Behaviour Driven Development (BDD) philosophy is Given, When, Then (GWT).
-- AAA and GWT are interchangeable, it is TDD and BDD that differ.
-- BDD/GWT is very useful in business environments.
-- *Aim to test all methods (for a given test class) with positive and negative cases considered!*
+There are 4 levels to Testing:
+
+| Testing Levels | Description |
+| ----------- | ----------- |
+|Unit Testing| Test individual components |
+|Integration Testing| Test integrated components |
+|System Testing| Test entire system |
+|Acceptance Testing| Test final system |
+
+Testing among different parties is divided into 4 parts:
+  
+| Acronym | Stage | Party |
+| ----------- |---|----------- |
+|DEV| Development | Software developer |
+|SIT| System Integration Test | Software developer and QA engineer |
+|UAT| User Acceptance Test | Client |
+|PROD| Production | Public user |
+
+[(more details)](https://medium.com/@buttertechn/qa-testing-what-is-dev-sit-uat-prod-ac97965ce4f)
+
+*For code implementation example(s) check:*
+
+| Unit Test(s) | Integration Test | System (Integration) Test |
+| ----------- |---|----------- |
+|[Controller Layer](https://github.com/arsy786/football-club-management-system/blob/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/controller/TeamControllerTest.java)| [MockMvc (Server-side)](https://github.com/arsy786/football-club-management-system/blob/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/TeamMockMvcIT.java) | [TestRestTemplate (Client-side)](https://github.com/arsy786/football-club-management-system/blob/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/TeamRestTemplateSIT.java) |
+|[Service Layer](https://github.com/arsy786/football-club-management-system/blob/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/service/TeamServiceTest.java)| Cucumber | Cucumber |
+|[Repository Layer](https://github.com/arsy786/football-club-management-system/tree/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/service)|  |  |
+
+There are different agile development philosophies, namely:
+
+| Test Driver Development (TDD) | Behaviour Driven Development (BDD) |
+| ----------- | ----------- |
+|Focused on testing smaller pieces of functionality in isolation| Designed to test an application's behavior from the end user's standpoint |
+| Arrange, Act, Assert (AAA) approach > | < Given, When, Then (GWT) approach. |
+| reduces the time required for project development | very useful in business environments |
+|developers write the tests| automated specifications are created by users or testers (with developers wiring them to the code under test) |
+
+- [More information on TDD vs. BDD](https://cucumber.io/blog/bdd/bdd-vs-tdd/)
+- *Should aim to test all methods/functionality (for a given test) with positive and negative cases considered!*
 
 Unit Testing
 
 ![Unit Testing in SB](unit-testing.PNG)
 
-
-- Unit Test = to validate that each unit of the software performs as designed. A unit is the smallest testable part of any software. It usually has one or a few inputs and usually a single output.
-- Can Unit Test endpoints (Controller), Services and Repositories.
-- Why test these layers? 
+Why Unit Test these layers? 
 
 | Layer | Reason |
 | ----------- | ----------- |
@@ -588,72 +618,20 @@ Unit Testing
 |Services | Ensure business logic works correctly. |
 |Repositories | Ensure specifications or relations have been implemented correctly. |
 
-- Unit Test: Controller(s) & Service(s) (& sometimes Repositories) via JUnit & Mockito
-
-Unit Testing - REST Controller
-
-- Requires @WebMvcTest annotation (used for Spring MVC tests. It disables full auto-configuration and instead apply only configuration relevant to MVC tests, such as MockMvc instance).
-- Controller is dependent on Service, but we do not need its implementation details as we are interested in what service does in this test, so can mock it using Mockito Annotation @MockBean.
-- Need @Autowired MockMvc - **this is for server side testing. It allows us to test controller without running a servlet container.**
-
-*For code implementation example(s) check:*
-[XXX.java](https://github.com/arsy786/football-club-management-system/blob/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/controller/TeamControllerTest.java),
-
-Unit Testing - Service layer
-
-- Requires @InjectMocks for Service (want to inject a mocked object into another mocked object).
-- Service is dependent on Repository (and Mapper), so we can mock these classes using Mockito Annotation @Mock. 
-
-*For code implementation example(s) check:*
-[XXX.java](https://github.com/arsy786/football-club-management-system/blob/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/controller/TeamControllerTest.java),
-
-Unit Testing - Repository layer
-
-- Requires DB configuration in applications.properties in resource test folder.
-- Need @DataJpaTest annotation (provides some standard setup needed for testing the persistence layer).
-- Need @AutoConfigureTestDatabase annotation (applied to a test class to configure a test database to use instead of the application-defined or auto-configured DataSource).
-- need to @Autowired Repository (as we are testing this).
-
-*For code implementation example(s) check:*
-[XXX.java](https://github.com/arsy786/football-club-management-system/blob/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/controller/TeamControllerTest.java),
-
+- Unit Test: Controller(s) & Service(s) (& sometimes Repositories) via JUnit & Mockito.
 
 Integration Testing
 
 ![Integration Testing in SB](integration-testing.PNG)
 
-- Integration Test = to determine if independently developed units of software work correctly when they are connected to each other.
-- Integration Testing: Endpoints (Controller) via Cucumber/Gherkin or @SpringBootTest (MockMvc/RestTemplate/TestRestTemplate).
-- These tests cover the whole path through the application. We send a request to the application, check it responds correctly and has changed the DB state as intended.
-- NOTE: NO MOCKING INVOLVED!
+- For integration testing of a Spring Boot application, we need to use @SpringBootTest along with MockMvc/RestTemplate/TestRestTemplate. Can also use Cucumber/Gherkin.
+- These tests cover the whole path through the application. We send a request to the application, check it responds correctly and has changed the DB state as intended. 
 
-The Spring Boot test slices like @WebMvcTest or @DataJpaTest that we saw earlier are narrow integration tests. They only load part of the application context and allow mocking of unneeded dependencies.
+NOTE: NO MOCKING INVOLVED!
 
-Broad integration tests, like TestRestTemplate, that need the whole application running and exercise the application through UI or network calls. Some call these system tests or end-to-end tests to make the distinction.
-
-For integrating testing of a spring-boot application, we need to use @SpringBootTest.
-
-MockMvc vs. RestTemplate: 
-- MckMvc used when testing Server-side application.
-- RestTemplate used when testing REST Client-side application.
-
-
-MockMvc IT
-
-
-
-TestRestTemplate IT
-
-
-
-Cucumber IT
-
-
-
-
-*For code implementation example(s) check:*
-[TeamControllerTest.java](https://github.com/arsy786/football-club-management-system/blob/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/controller/TeamControllerTest.java),
-
+| (Narrow) Integration Tests | (System) Integration Tests |
+| ----------- | ----------- |
+|The Spring Boot test slices like @WebMvcTest or @DataJpaTest that we saw earlier are narrow integration tests. They only load part of the application context and allow mocking of unneeded dependencies. | Broad integration tests, like TestRestTemplate, that need the whole application running and exercise the application through UI or network calls. Some call these system tests or end-to-end tests to make the distinction. |
 
 
 ### 4.4 Security

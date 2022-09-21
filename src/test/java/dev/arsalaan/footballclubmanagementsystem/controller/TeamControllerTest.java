@@ -27,6 +27,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // Unit test
 // (cannot involve Spring and the whole request & response lifecycle as then it is no longer a unit test.)
 
+// Requires @WebMvcTest annotation (used for Spring MVC tests. It disables full auto-configuration and instead apply only configuration relevant to MVC tests, such as MockMvc instance).
+// Controller is dependent on Service, but we do not need its implementation details as we are interested in what service does in this test, so can mock it using Mockito Annotation @MockBean.
+// Need @Autowired MockMvc - this is for server side testing. It allows us to test controller without running a servlet container.
+
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(TeamController.class)
 class TeamControllerTest {
