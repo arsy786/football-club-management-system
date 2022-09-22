@@ -133,16 +133,16 @@ public class TeamService {
     public void removeTeamFromLeague(Long leagueId, Long teamId) {
 
         League league = leagueRepository.findById(leagueId).orElseThrow(
-                () -> new ApiRequestException("League with id " + leagueId + " not found"));
+                () -> new ApiRequestException("League with id " + leagueId + " does not exist"));
         Team team = teamRepository.findById(teamId).orElseThrow(
                 () -> new ApiRequestException("Team with id " + teamId + " does not exist"));
 
-        if(!team.getLeague().getLeagueId().equals(league.getLeagueId())) {
-            throw new ApiRequestException("Team with id " + teamId + " is not assigned to League with id " + leagueId);
-        }
-
         if (Objects.isNull(team.getLeague())) {
             throw new ApiRequestException("Team with id " + teamId + " is not assigned to any League");
+        }
+
+        if(!team.getLeague().getLeagueId().equals(league.getLeagueId())) {
+            throw new ApiRequestException("Team with id " + teamId + " is not assigned to League with id " + leagueId);
         }
 
         team.setLeague(null); // sets league field in team to null instead of removing the parents AND deleting child

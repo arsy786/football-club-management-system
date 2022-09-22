@@ -150,7 +150,7 @@ public class TeamController {
     public ResponseEntity addTeamToLeague(@PathVariable("leagueId") Long leagueId,
                                           @PathVariable("teamId") Long teamId) {
 
-        log.info("Received POST /api/v1/team/{}/league/{} request.", teamId, leagueId);
+        log.info("Received PUT /api/v1/team/{}/league/{} request.", teamId, leagueId);
 
         teamService.addTeamToLeague(leagueId, teamId);
 

@@ -1,7 +1,6 @@
 package dev.arsalaan.footballclubmanagementsystem.repository;
 
 import dev.arsalaan.footballclubmanagementsystem.model.Team;
-import dev.arsalaan.footballclubmanagementsystem.repository.TeamRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +30,7 @@ public class TeamRepositoryTest {
     @Test
     public void testCreateReadDelete() {
 
+        // given
         Team team = Team.builder()
                 .teamId(1L)
                 .name("Manchester United")
@@ -38,30 +38,40 @@ public class TeamRepositoryTest {
                 .manager("Erik ten Hag")
                 .build();
 
+        // test create
         teamRepository.save(team);
 
+        // test read
         Iterable<Team> teams = teamRepository.findAll();
+
+        // assert
         Assertions.assertThat(teams).extracting(Team::getName).containsOnly("Manchester United");
 
+        // test delete
         teamRepository.deleteAll();
+
+        // assert
         Assertions.assertThat(teamRepository.findAll()).isEmpty();
+
     }
 
     @Test
     public void test_findTeamByName() {
 
+        // given
         Team team = Team.builder()
                 .teamId(1L)
                 .name("Manchester United")
                 .city("Manchester")
                 .manager("Erik ten Hag")
                 .build();
-
         teamRepository.save(team);
 
-        Optional<Team> teamOptional= teamRepository.findTeamByName("Manchester United");
+        // when
+        Optional<Team> teamOptional = teamRepository.findTeamByName("Manchester United");
         boolean teamIsPresent = teamOptional.isPresent();
 
+        // then
         assertTrue(teamIsPresent);
         Assertions.assertThat(teamOptional.get().getCity()).isEqualTo("Manchester");
     }
