@@ -592,16 +592,16 @@ Testing among different parties is divided into 4 parts:
 | ----------- |---|----------- |
 |[Controller Layer](https://github.com/arsy786/football-club-management-system/blob/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/controller/TeamControllerTest.java)| [MockMvc (Server-side)](https://github.com/arsy786/football-club-management-system/blob/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/TeamMockMvcIT.java) | [TestRestTemplate (Client-side)](https://github.com/arsy786/football-club-management-system/blob/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/TeamRestTemplateSIT.java) |
 |[Service Layer](https://github.com/arsy786/football-club-management-system/blob/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/service/TeamServiceTest.java)| Cucumber | Cucumber |
-|[Repository Layer](https://github.com/arsy786/football-club-management-system/tree/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/service)|  |  |
+|[Repository Layer](https://github.com/arsy786/football-club-management-system/tree/master/src/test/java/dev/arsalaan/footballclubmanagementsystem/repository/TeamRepositoryTest.java)|  |  |
 
 There are different agile development philosophies, namely:
 
 | Test Driver Development (TDD) | Behaviour Driven Development (BDD) |
 | ----------- | ----------- |
 |Focused on testing smaller pieces of functionality in isolation| Designed to test an application's behavior from the end user's standpoint |
-| Arrange, Act, Assert (AAA) approach > | < Given, When, Then (GWT) approach. |
-| reduces the time required for project development | very useful in business environments |
-|developers write the tests| automated specifications are created by users or testers (with developers wiring them to the code under test) |
+| Arrange, Act, Assert (AAA) approach (synonymous with GWT) | Given, When, Then (GWT) approach (synonymous with AAA) |
+| Reduces the time required for project development | Very useful in business environments |
+|Developers write the tests| Automated specifications are created by users or testers (with developers wiring them to the code under test) |
 
 - [More information on TDD vs. BDD](https://cucumber.io/blog/bdd/bdd-vs-tdd/)
 - *Should aim to test all methods/functionality (for a given test) with positive and negative cases considered!*

@@ -61,7 +61,6 @@ public class TeamServiceTest {
 
     @BeforeEach
     public void setup(){
-
         team1 = Team.builder().teamId(1L).name("Manchester United").city("Manchester")
                 .manager("Erik ten Hag").build();
         team2 = Team.builder().teamId(2L).name("Manchester City").city("Manchester")

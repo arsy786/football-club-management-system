@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 // Need @AutoConfigureTestDatabase annotation (applied to a test class to configure a test database to use instead of the application-defined or auto-configured DataSource).
 // Need to @Autowired Repository (as we are testing this).
 
-
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
@@ -52,7 +51,6 @@ public class TeamRepositoryTest {
 
         // assert
         Assertions.assertThat(teamRepository.findAll()).isEmpty();
-
     }
 
     @Test
@@ -75,6 +73,5 @@ public class TeamRepositoryTest {
         assertTrue(teamIsPresent);
         Assertions.assertThat(teamOptional.get().getCity()).isEqualTo("Manchester");
     }
-
 
 }
