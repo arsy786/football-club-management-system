@@ -636,7 +636,8 @@ NOTE: NO MOCKING INVOLVED!
 
 ### 4.4 Security
 
-- JWT
+- Security is a very detailed topic and has a variety of implementations, therefore a separate project dedicated to Security was created.
+- [Spring Security Project](https://github.com/arsy786/spring-security-tutorials)
 
 ### 4.5 Lombok - JPA
 
