@@ -10,7 +10,7 @@ FCMS is a Spring Boot REST API for dealing with the management of Football Clubs
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[2.2 Deciding Foreign Keys in a Relationship](#22-deciding-foreign-keys-in-a-relationship)
 <br>
-[3. Spring Boot REST API Development](#spring-boot-rest-api)
+[3. Spring Boot REST API Development](#3-spring-boot-rest-api)
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3.1 Project Setup](#31-project-setup)
 <br>
@@ -74,10 +74,9 @@ I wanted to design the Entity Relationship Diagram (ERD) so that I could make us
 | **Many** Teams play in **a** League| @ManyToOne |
 | **A** Team has **an** Owner | @OneToOne |
 | **A** Team has **a** Stadium | @OneToOne |
-| **A** Team plays in **many** Cups AND **a** Cup has **many** Teams | @ManyToMany |
+| **A** Team plays in **many** Cups AND **a** Cup has **many** Teams* | @ManyToMany |
 
-Another way of describing the above, **a** Team can play in **many** Cups (and **many** Teams can play in the **same** Cup)
-
+*Another way of describing this is, **a** Team can play in **many** Cups (and **many** Teams can play in the **same** Cup)
 
 NOTE: @ManyToMany = @OneToMany + @ManyToOne
 
@@ -195,7 +194,7 @@ A) If data in one table is related to, BUT does NOT 'belong' to the entity descr
 - Maven, Java, Jar, 8
 - MUST: Spring Web, Spring Data JPA, Database (H2, Mongo, etc.)
 - OPTIONAL: Spring Rest Dev Tools, REST Repos, Spring Web Services, etc.
-- [Maven artifact and group naming conventions](https://stackoverflow.com/questions/23172586/maven-artifact-and-group-naming-conventions)
+- [Maven artifact and group naming conventions (StackOverflow)](https://stackoverflow.com/questions/23172586/maven-artifact-and-group-naming-conventions)
 
 ### 3.1.2 Connect Spring Boot to Database
 
@@ -234,6 +233,8 @@ INSERT INTO team (name, city, manager)
 VALUES ('Manchester City F.C.', 'Manchester', 'Pep Guardiola');
 ```
 
+NOTE: Adding initial data is useful in a DEV environment for testing purposes, but is not needed in production.
+
 ### 3.2 Model / Entity Layer
 
 - Create a POJO for your Models/Entities.
@@ -241,6 +242,8 @@ VALUES ('Manchester City F.C.', 'Manchester', 'Pep Guardiola');
 - Can add attributes (name, nullable, unique, etc.) to JPA Annotations (@Table, @Column, etc.) to add constraints to DB.
 - Can use Lombok annotations to reduce boilerplate code.
 
+NOTE: Use the annotations from javax.persistence.* for adding constraints in the Model layer.
+<br>
 NOTE: [Be careful of Lombok - JPA integration](#45-lombok---jpa)
 
 JPA Annotations with Lombok example:
@@ -269,7 +272,7 @@ public class User {
 
 }
 ```
-- [Link to understanding JPA Entities and Annotations](https://www.baeldung.com/jpa-entities)
+- [Link to understanding JPA Entities and Annotations (Baeldung)](https://www.baeldung.com/jpa-entities)
 
 *For code implementation example(s) check:*
 [Team.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/model/Team.java)
@@ -285,7 +288,7 @@ or
 - Basically, DTOs allow you to decouple presentation/business logic layer from the data access layer.
 - Can use Lombok annotations to reduce boilerplate code.
 
-NOTE: [Can use JPA Buddy to generate DTOs](https://www.youtube.com/watch?v=_u-qn-R4DoA)
+NOTE: [Can use JPA Buddy to generate DTOs (YouTube/JPABuddy)](https://www.youtube.com/watch?v=_u-qn-R4DoA)
 <br>
 NOTE: DTOs solve Jackson JSON infinite recursion problem for bidirectional relationships.
 
@@ -327,7 +330,9 @@ public class OwnerDto implements Serializable {
 ```
 
 - Can use Java Bean Validation annotations on fields (@NonBlank, @Email, etc.) to validate user inputs.
-- Some annotations accept additional attributes, but the message attribute is common to all of them. This is the message that will usually be rendered when the value of the respective property fails validation.
+- Some annotations accept additional attributes, but the "message" attribute is common to all of them. This is the message that will usually be rendered when the value of the respective property fails validation.
+
+NOTE: Use the annotations from javax.validation.constraints.* for adding validation in the DTO layer.
 
 Java Bean Validation example:
 ```java
@@ -355,7 +360,7 @@ public class UserDto {
 }
 ```
 
-- [Link to Java Bean Validation Basics](https://www.baeldung.com/javax-validation#overview)
+- [Link to Java Bean Validation Basics (Baeldung)](https://www.baeldung.com/javax-validation#overview)
 
 *For code implementation example(s) check:*
 [TeamDTO.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/dto/TeamDTO.java)
@@ -368,11 +373,13 @@ or
 - Mapper is a technique to transfer data from DTOs to Entitys or vice versa.
 - MapStruct is a code generator that greatly simplifies the implementation of mappings.
 - When using MapStruct, you only define simple method signatures, converting Entity to DTO, DTO to Entity, List of Entity to List of DTOs.
-- MapStruct annotation (@Mapper) will generate implementation code for you during build time.
+- The MapStruct annotation (@Mapper) will generate implementation code for you during build time.
 
-NOTE: [Can use JPA Buddy to generate Mappers](https://www.youtube.com/watch?v=_u-qn-R4DoA)
+NOTE: [Can use JPA Buddy to generate Mappers (YouTube/JPABuddy)](https://www.youtube.com/watch?v=_u-qn-R4DoA)
 <br>
 NOTE: If using MapStruct, ensure that you run **[mvn clean compile/install](https://stackoverflow.com/questions/58580132/mapstruct-ignores-fields)** before starting application.
+<br>
+NOTE: Ensure correct configuration when using MapStruct and Lombok in the same project.
 
 Example of Mapper class with MapStruct @Mapper Annotation:
 ```java
@@ -458,8 +465,8 @@ or
 
 - Handling errors correctly in APIs while providing meaningful error messages is a very desirable feature, as it can help the API client properly respond to issues. The default behavior tends to be returning stack traces that are hard to understand and ultimately useless for the API client.
 - Partitioning the error information into fields enables the API client to parse it and provide better error messages to the user.
-- [Spring Boot Tutorial | How To Handle Exceptions](https://www.youtube.com/watch?v=PzK4ZXa2Tbc&t=355s)
-- [Guide to Spring Boot REST API Error Handling](https://www.toptal.com/java/spring-boot-rest-api-error-handling)
+- [Spring Boot Tutorial | How To Handle Exceptions (YouTube/AmigosCode)](https://www.youtube.com/watch?v=PzK4ZXa2Tbc&t=355s)
+- [Guide to Spring Boot REST API Error Handling (toptal/BrunoLeite)](https://www.toptal.com/java/spring-boot-rest-api-error-handling)
 
 *For code implementation example(s) check:*
 [.../exception/](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/exception/)
@@ -492,7 +499,7 @@ or
 
 ### 3.5.1 Extra CRUD Methods/Endpoints
 
-- Once the basic CRUD methods are added to the Service/Controller layers, if the entity has relationships with other entities... Extra CRUD methods need to be implemented.
+- Once the basic CRUD methods are added to the Service/Controller layers, if the entity has relationships with other entities... Extra CRUD methods can be implemented.
 - @ManyToOne: logic in Child Service layer
 - @OneToOne: logic is either not required OR in the Dependent entity service layer (e.g. Student Mentor exists if Student does)
 - @ManyToMany: logic in either side OR in the Dependent side (if applicable)
@@ -514,17 +521,17 @@ The Extra HTTP REST API calls for entity rships:
 [@ManyToMany (Team) - CupController.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/controller/CupController.java)
 
 
-Note: Service layer logic differs between @ManyToMany and @ManyToOne relationships
+NOTE: Service layer logic differs between @ManyToMany and @ManyToOne relationships
 
 For example -
 
 @ManyToOne: To check if Child contains Parent (checking an Object)
-```java
+``` java
 if (Objects.nonNull(player.getTeam()))
 ```
 @ManyToMany: To check if Dependent contains Independent (checking a Collection of Objects)
 
-```java
+``` java
 if (cup.getTeams.contains(team))
 ```
 ## 4. Extra Features to Consider
@@ -533,9 +540,9 @@ if (cup.getTeams.contains(team))
 
 - Swagger/OpenAPI
 - Can add annotations (@Operation, @ApiResponses, @ApiResponse) in Controller layer to add more info to API description.
-- [Can add @OpenAPIDefinition to add custom information about your APIs](https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations#OpenAPIDefinition)
-- [Documenting a Spring REST API Using OpenAPI 3.0](https://www.baeldung.com/spring-rest-openapi-documentation)
-- [How to change the URL for the OpenAPI doc and/or Swagger page](https://medium.com/javarevisited/part-1-how-to-add-openapi-3-0-and-swagger-to-spring-boot-application-35c96422e94b)
+- [Can add @OpenAPIDefinition to add custom information about your APIs (GitHub)](https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations#OpenAPIDefinition)
+- [Documenting a Spring REST API Using OpenAPI 3.0 (Baeldung)](https://www.baeldung.com/spring-rest-openapi-documentation)
+- [How to change the URL for the OpenAPI doc and/or Swagger page (Medium)](https://medium.com/javarevisited/part-1-how-to-add-openapi-3-0-and-swagger-to-spring-boot-application-35c96422e94b)
 
 *For code implementation example(s) check:*
 [TeamController.java](https://github.com/arsy786/football-club-management-system/blob/master/src/main/java/dev/arsalaan/footballclubmanagementsystem/controller/TeamController.java)
@@ -552,9 +559,9 @@ and
 - Can configure Logback (default for SB) settings in application.properties or elsewhere.
 - Log Levels: ERROR, WARN, INFO, DEBUG, TRACE
 
-For details on implementation: [Logging in Spring Boot with SLF4J](https://stackabuse.com/guide-to-logging-in-spring-boot/)
+For details on implementation: [Logging in Spring Boot with SLF4J (StackAbuse)](https://stackabuse.com/guide-to-logging-in-spring-boot/)
 <br>
-For details on best practices: [Logging Best Practices](https://tuhrig.de/my-logging-best-practices/)
+For details on best practices: [Logging Best Practices (tuhrig)](https://tuhrig.de/my-logging-best-practices/)
 
 
 *For code implementation example(s) check:*
