@@ -46,7 +46,7 @@ public class CupController {
 
     // [POST] Create a Cup
     @PostMapping("/")
-    public ResponseEntity createCup(/*@Valid*/ @RequestBody CupDTO cupDTO) {
+    public ResponseEntity createCup(/* @Valid */ @RequestBody CupDTO cupDTO) {
         cupService.createCup(cupDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -81,7 +81,7 @@ public class CupController {
     // [POST] Add a Cup to a specific Team
     @PostMapping("/{cupId}/team/{teamId}")
     public ResponseEntity addCupToTeam(@PathVariable("teamId") Long teamId,
-                                          @PathVariable("cupId") Long cupId) {
+            @PathVariable("cupId") Long cupId) {
         cupService.addCupToTeam(teamId, cupId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -89,10 +89,9 @@ public class CupController {
     // [DELETE] Remove a specific Cup from a Team
     @DeleteMapping("/{cupId}/team/{teamId}")
     public ResponseEntity removeCupFromTeam(@PathVariable("teamId") Long teamId,
-                                               @PathVariable("cupId") Long cupId) {
+            @PathVariable("cupId") Long cupId) {
         cupService.removeCupFromTeam(teamId, cupId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 
 }
