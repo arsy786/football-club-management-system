@@ -91,7 +91,7 @@ The application supports using a preset H2 database or your own database setup:
   spring.profiles.active=default
   ```
 
-- **For Custom Database Setup**: Switch to the prod profile in `application.properties`:
+- **For Custom Database Setup**: Ensure `application.properties` is set to use the prod profile:
 
   ```properties
   spring.profiles.active=prod
