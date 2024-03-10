@@ -53,15 +53,15 @@ FCMS is a Spring Boot REST API for dealing with the management of Football Clubs
 
 ## 0. Getting Started
 
-## Prerequisites
+## Building & Running the Application
+
+### Prerequisites
 
 - Git
 - Java 1.8
 - Maven for building the project (optional if you use the Maven wrapper included in the project).
 - IDE of your choice (optional for running directly from the IDE).
 - Postman (optional for making API calls)
-
-## Building & Running the Application
 
 ### Cloning the Repository
 
