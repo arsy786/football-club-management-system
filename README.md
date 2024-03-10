@@ -147,7 +147,11 @@ This starts the Spring Boot application using the packaged .jar file. It's suita
 
 The REST API is documented with Swagger.
 
-After starting the application, access the Swagger UI to interact with the API at: `http://localhost:8080/swagger-ui/index.html`
+After starting the application, access the Swagger UI to interact with the API at:
+
+```bash
+http://localhost:8080/swagger-ui/index.html
+```
 
 ## 1. Motivation
 
