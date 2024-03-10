@@ -53,17 +53,19 @@ FCMS is a Spring Boot REST API for dealing with the management of Football Clubs
 
 ## 0. Getting Started
 
-## Prerequisites
+### Prerequisites
 
-- Git
-- Java 1.8
-- Maven for building the project (optional if you use the Maven wrapper included in the project).
-- IDE of your choice (optional for running directly from the IDE).
-- Postman (optional for making API calls)
+Ensure you have the following installed on your system:
 
-## Building & Running the Application
+- **Git**: For cloning the repository.
+- **Java JDK 1.8**: Required to compile and run the Java application.
+- **Maven**: For building the project. The Maven wrapper is included, so a global installation is not necessary.
+- **IDE of Your Choice** (Optional): Useful for running and debugging the application directly within an IDE (e.g., IntelliJ IDEA, Eclipse, VSCode).
+- **Postman** (Optional): For making API calls and testing the REST API endpoints.
 
-### Cloning the Repository
+### Building & Running the Application
+
+#### Cloning the Repository
 
 1. Open your terminal or command prompt.
 
@@ -81,51 +83,72 @@ FCMS is a Spring Boot REST API for dealing with the management of Football Clubs
 
 ### Setting up Database
 
-To use preset H2 database, in application.properties set:
+The application supports using a preset H2 database or your own database setup:
 
-```properties
-spring.profiles.active=default
-```
+- **For H2 Database**: Ensure `application.properties` is set to use the default profile:
 
-To use your own database, in application.properties set:
+  ```properties
+  spring.profiles.active=default
+  ```
 
-```properties
-spring.profiles.active=default
-```
+- **For Custom Database Setup**: Switch to the prod profile in `application.properties`:
+  To use your own database, in application.properties set:
 
-and update application-prod.properties to your own database properties. If using database other than postgresql, you will need to update pom.xml with correct dependencies.
+  ```properties
+  spring.profiles.active=prod
+  ```
 
-### Using Maven Wrapper
+  Then, update `application-prod.properties` with your database properties. If using a database other than PostgreSQL, remember to update the `pom.xml` with the correct dependencies for your chosen database.
 
-1. Navigate to the project's root directory in your terminal and run:
+### Running App
 
-   ```bash
-   ./mvnw clean package
-   ```
+You can run the application directly with Maven or Maven Wrapper:
 
-   This command compiles the application and packages it into a runnable .jar file located in the target directory.
+- **For Maven**:
 
-2. If you have Maven installed globally, you can run:
+  ```bash
+  mvn spring-boot:run
+  ```
 
-   ```bash
-   mvn clean package
-   ```
+- **For Maven Wrapper**:
 
-3. After building the application, you can run it using the following command:
+  ```bash
+  ./mvnw spring-boot:run
+  ```
 
-   ```bash
-   java -jar target/football-club-management-system-0.0.1-SNAPSHOT.jar
-   ```
+This command compiles the application, starts the Spring Boot application, and deploys it on the embedded server. It's convenient during development for quick testing and debugging.
 
-## Using the API
+### Building App
 
-Swagger documents the REST API.
+To build the application for deployment, use Maven or Maven Wrapper:
 
-When running the application, visit:
+- **For Maven**:
 
-```bash
-http://localhost:8080/swagger-ui/index.html
-```
+  ```bash
+  mvn clean package
+  ```
+
+- **For Maven Wrapper**:
+
+  ```bash
+  ./mvnw clean package
+  ```
+
+This command compiles the application, runs any tests, and packages the compiled code into a runnable .jar file located in the target directory.
+
+- After building the application, you can run it using the following command:
+
+  ```bash
+  java -jar target/football-club-management-system-0.0.1-SNAPSHOT.jar
+  ```
+
+This starts the Spring Boot application using the packaged .jar file. It's suitable for deploying or sharing the application in a production-like environment.
+
+### Using the API
+
+The REST API is documented with Swagger.
+
+After starting the application, access the Swagger UI to interact with the API at: `http://localhost:8080/swagger-ui/index.html`
 
 ## 1. Motivation
 
