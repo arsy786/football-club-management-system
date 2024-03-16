@@ -153,8 +153,6 @@ Eventually, I decided that the best way to grasp these concepts would be to actu
 
 Designing my own application means that I can test my understanding and skills from the very ground up. I am a fan of football therefore the idea of building the FCMS REST API came natural to me.
 
-I will be using this README.md file to add any notes, features, plans and details regarding the management of the entire project! This will essentially serve as a blueprint for any future Spring Boot REST APIs I plan to build! :)
-
 ## 2. REST API Design
 
 ### 2.1 ERD
