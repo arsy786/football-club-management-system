@@ -55,17 +55,13 @@ FCMS is a Spring Boot REST API for dealing with the management of Football Clubs
 
 ### Prerequisites
 
-Ensure you have the following installed on your system:
-
 - **Git**: For cloning the repository.
 - **Java JDK 1.8**: Required to compile and run the Java application.
 - **Maven**: For building the project. The Maven wrapper is included, so a global installation is not necessary.
 - **IDE of Your Choice** (Optional): Useful for running and debugging the application directly within an IDE (e.g., IntelliJ IDEA, Eclipse, VSCode).
 - **Postman** (Optional): For making API calls and testing the REST API endpoints.
 
-### Building & Running the Application
-
-#### Cloning the Repository
+### Running the App
 
 1. Open your terminal or command prompt.
 
@@ -81,7 +77,21 @@ Ensure you have the following installed on your system:
    cd football-club-management-system
    ```
 
-### Setting up Database
+4. Run the following Maven command to build and start the service:
+
+   ```bash
+   # For Maven
+   mvn spring-boot:run
+
+   # For Maven Wrapper (automatically uses the correct Maven version)
+   ./mvnw spring-boot:run
+   ```
+
+   This command compiles the application, starts the Spring Boot application, and deploys it on the embedded server. It's convenient during development for quick testing and debugging.
+
+   The application should now be running on `localhost:8080`.
+
+### Database Configuration
 
 The application supports using a preset H2 database or your own database setup:
 
@@ -99,49 +109,27 @@ The application supports using a preset H2 database or your own database setup:
 
   Then, update `application-prod.properties` with your database properties. If using a database other than PostgreSQL, remember to update the `pom.xml` with the correct dependencies for your chosen database.
 
-### Running App
+### Building the App
 
-You can run the application directly with Maven or Maven Wrapper:
+1. To build the application for deployment, run the following command:
 
-- **For Maven**:
+   ```bash
+   # For Maven
+   mvn clean package
 
-  ```bash
-  mvn spring-boot:run
-  ```
+   # For Maven Wrapper
+   ./mvnw clean package
+   ```
 
-- **For Maven Wrapper**:
+   This command compiles the application, runs any tests, and packages the compiled code into a runnable .jar file located in the target directory.
 
-  ```bash
-  ./mvnw spring-boot:run
-  ```
+2. After building the application, you can run it using the following command:
 
-This command compiles the application, starts the Spring Boot application, and deploys it on the embedded server. It's convenient during development for quick testing and debugging.
+   ```bash
+   java -jar target/football-club-management-system-0.0.1-SNAPSHOT.jar
+   ```
 
-### Building App
-
-To build the application for deployment, use Maven or Maven Wrapper:
-
-- **For Maven**:
-
-  ```bash
-  mvn clean package
-  ```
-
-- **For Maven Wrapper**:
-
-  ```bash
-  ./mvnw clean package
-  ```
-
-This command compiles the application, runs any tests, and packages the compiled code into a runnable .jar file located in the target directory.
-
-- After building the application, you can run it using the following command:
-
-  ```bash
-  java -jar target/football-club-management-system-0.0.1-SNAPSHOT.jar
-  ```
-
-This starts the Spring Boot application using the packaged .jar file. It's suitable for deploying or sharing the application in a production-like environment.
+   This starts the Spring Boot application using the packaged .jar file. It's suitable for deploying or sharing the application in a production-like environment.
 
 ### Using the API
 
